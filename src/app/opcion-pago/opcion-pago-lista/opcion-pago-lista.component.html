@@ -1,0 +1,670 @@
+<div>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">Nombre del Estudiante</th>
+        <th scope="col">Grado</th>
+        <th scope="col">Pension</th>
+        <th scope="col">Matricula</th>
+        <th scope="col" *ngIf="(students[0]?.ID_CATE.id !== 1)">Descuento {{students[0]?.ID_CATE.TIPO_CATE}}</th>
+        <th scope="col" *ngIf="(students[0]?.ID_CATE.id === 1 && !existeAyudaFinancieraFamilia())">Descuento 2ndo Hijo</th>
+        <th scope="col" *ngIf="((students[0]?.ID_CATE.id === 1 && students[0].ID_FAMILIA.NUM_HIJOS === 1 && existeAyudaFinancieraFamilia()) || existeAyudaFinancieraFamilia() )">Ayuda Financiera</th>
+        <th scope="col" *ngIf="existenCreditosFamilia()">Creditos Misioneros</th>
+        <th scope="col">Saldo Anterior</th>
+        <th scope="col">Total</th>
+        <th scope="col">Estado</th>
+        <th scope="col">Seleccione los estudiantes:</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let student of students; let i=index" [ngSwitch]="student.ID_CATE.id">
+        <th scope="row">{{student.NOMBRE_EST}}</th>
+        <td>{{student?.ID_GRADO.id | tipoGrado}}</td>
+        <td>{{student?.ID_GRADO.COSTO_PENSION | currency}}</td>
+        <td *ngIf="student.ID_CATE.id === 2 || student.ID_CATE.id === 3">{{300 | currency}}</td>
+        <td *ngIf="student.ID_CATE.id === 1 || student.ID_CATE.id === 4">{{student?.ID_GRADO.COSTO_MATRICULA | currency}}</td>
+        <ng-template #empty><td>$0,00</td></ng-template>
+        <td *ngIf="!existeAyudaFinancieraFamilia()">
+          <span *ngSwitchCase="'1'">
+              <span *ngIf="student.DESC_AYUD_FIN === '0'">{{ -(student?.ID_FAMILIA.DESC_NUM_HIJOS/student?.ID_FAMILIA.NUM_HIJOS) | currency}}</span>
+              <span *ngIf="student.DESC_AYUD_FIN !== '0' && existeAyudaFinancieraFamilia()">$0.00</span>
+          </span>
+          <span *ngSwitchCase="'2'">
+              <span *ngIf="student.ID_GRADO.id > 1">{{ -(student.ID_GRADO.COSTO_PENSION) * (student.ID_CATE.DESC_CATE/100) | currency}}</span>
+              <span *ngIf="student.ID_GRADO.id === 1">{{ -2850 | currency}}</span>
+          </span>
+          <span *ngSwitchCase="'3'">{{-(student?.ID_GRADO.COSTO_PENSION) * (student?.ID_CATE.DESC_CATE/100) | currency}}</span>
+          <span *ngSwitchCase="'4'">
+            <span>{{-(student?.ID_GRADO.COSTO_PENSION) * (student?.ID_CATE.DESC_CATE/100) | currency}}</span>
+          </span>
+          <span *ngSwitchDefault>$0,00</span>
+        </td>
+        <td *ngIf="existeAyudaFinancieraFamilia()">
+            <span *ngIf="student.DESC_AYUD_FIN === '0' && (student.ID_CATE.id === 4 || student.ID_CATE.id === 1)">$0.00</span>
+            <span *ngIf="student.DESC_AYUD_FIN !== '0' && (student.ID_CATE.id === 4 || student.ID_CATE.id === 1)">-${{student?.DESC_AYUD_FIN}}</span>
+        </td>
+        <td *ngIf="existenCreditosFamilia()">
+          <span *ngIf="student.DESC_CREDITOS_MISION === 0">$0.00</span>
+          <span *ngIf="student.DESC_CREDITOS_MISION !== 0">-{{student.DESC_CREDITOS_MISION | currency}}</span>
+        </td>
+        <td>{{student?.SALDO_PENDIENTE}}</td>
+        <td>{{getTotalEstudiante(student,1,true, false, true) | currency}}</td>
+        <td>{{student?.ESTADO}}
+        </td>
+        <td><div class="form-check">
+          <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" (click)="onAddorDeleteStudent(student)" [disabled]="student?.ESTADO === 'MATRICULADO'">
+          <label class="form-check-label" for="defaultCheck1">
+          </label>
+        </div></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<br>
+<br>
+<div class="container" [hidden]="hasSaldoPendiente()"[ngSwitch]="opcionPagoSaldoPendiente.value.opcion">
+    <div class="row" >
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+          <div class="alert alert-info" *ngSwitchCase="'Añadir saldo pendiente a pago actual'" [hidden]="seleccionado">
+              <h3><strong>INFO:</strong> Su saldo pendiente fue añadido al pago actual</h3>
+          </div>
+          <div class="alert alert-success" *ngSwitchCase="'Cancelar el saldo pendiente'" [hidden]="seleccionado">
+              <h3><strong>EXITO:</strong> Su saldo pendiente fue cancelado</h3>
+          </div>
+          <div class="alert alert-danger" *ngSwitchDefault>
+              <h3><strong>AVISO:</strong> Usted tiene saldo pendiente que debe cancelar</h3>
+          </div>
+          <h4>Desea:</h4>
+        </div>
+      </div>
+      <form [formGroup]="opcionPagoSaldoPendiente" (ngSubmit)="openDialogSaldoPendiente()">
+      <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-5">
+            <div class="radio" *ngFor="let opcion of opciones" >
+              <label><input type="radio" name="opcion" formControlName="opcion" [value]="opcion"><strong>{{ opcion }}</strong></label>
+            </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-5"></div>
+        <div class="col-md-2">
+          <button class="btn btn-primary" [disabled]="bloqueado">Aceptar</button>
+        </div>
+      </div>
+    </form>
+      <br>
+      <br>
+</div>
+<form [formGroup]="metodoFormaPago" (ngSubmit)="openDialog()">
+<div class="container" [hidden]="!hasSaldoPendiente() && bandera">
+    <h2>Planes de pago: </h2>
+    <h3>Seleccione un plan de pago: </h3>
+    <div class="row" id="content" #content>
+      <div class="col-md-4 col-print-4">
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="formaPago" id="pagoAnual" formControlName="formaPago" value="Anual">
+          <label class="form-check-label" for="pagoAnual">
+            <h3>Anual</h3>
+          </label>
+        </div>
+        <br *ngIf="studentsSelected.length > 2">
+        <ul>
+          <li class="list-group-item">Nombre:</li>
+          <li class="list-group-item">Pensión:</li>
+          <li class="list-group-item">Matricula:</li>
+          <li class="list-group-item">Subtotal:</li>
+          <li class="list-group-item" *ngIf="familia?.estudiantes[0].ID_CATE === 2 || familia?.estudiantes[0].ID_CATE === 3">Descuento Matricula:</li>
+          <li class="list-group-item">Descuento:</li>
+          <li class="list-group-item" *ngIf="!noExisteAyudaFinancieraEstudiante() && familia?.estudiantes[0].ID_CATE === 4">Ayuda Financiera</li>
+          <li class="list-group-item" *ngIf="familia?.estudiantes[0].ID_CATE === 1 && noExisteAyudaFinancieraEstudiante()">Descuento prepago (%5):</li>
+          <li class="list-group-item" *ngIf="existenCreditosEstudiante()">Creditos Misión</li>
+          <li class="list-group-item">Subtotal Descuento:</li>
+          <li class="list-group-item" *ngIf="saldoPendienteSeleccionado">Saldo Anterior:</li>
+          <li class="list-group-item">Total: </li>
+          <li class="list-group-item"><strong>Método de pago:</strong></li>
+          <li class="list-group-item">
+              <div class="form-check">
+                  <input class="form-check-input" type="radio" name="metodoPagoAnual" id="tarjetaAnual"  formControlName="metodoPagoAnual" value="Tarjeta de Crédito Anual">
+                  <label class="form-check-label" for="metodoPagoAnual">
+                  </label>
+              </div>
+            Tarjeta de credito
+            <span *ngIf="familia?.estudiantes[0].ID_CATE === 1">
+              (Sin dcto prepago)
+            </span>
+            :
+          </li>
+          <br *ngIf="familia?.estudiantes[0].ID_CATE === 1">
+          <li class="list-group-item">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="metodoPagoAnual" id="efectivoAnual" formControlName="metodoPagoAnual" value="Efectivo o Cheque Anual">
+                <label class="form-check-label" for="metodoPagoAnual">
+                </label>
+              </div>
+              Cheque o efectivo:
+          </li>
+          <li class="list-group-item">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="metodoPagoAnual" id="otrosAnual" formControlName="metodoPagoAnual" value="Otros">
+                <label class="form-check-label" for="metodoPagoAnual">
+                </label>
+              Otro:
+              <input type="text" name="valorOtrosAnual" id="valorOtrosAnual"
+              formControlName="valorOtrosAnual" [(ngModel)]="valorInputOtros"
+              [value]="valorInputOtros">
+              <label class="form-check-label" for="valorOtrosAnual">
+              </label>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="col-md-8 col-print-8">
+        <hr>
+        <hr>
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col" *ngFor="let student of studentsSelected">{{ student.NOMBRE_EST }}</th>
+              <th scope="col">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td *ngFor="let student of studentsSelected">{{student.ID_GRADO.COSTO_PENSION | currency}}</td>
+              <td>{{getTotalPension() | currency}}</td>
+              <td >-</td>
+            </tr>
+            <tr>
+              <td *ngFor="let student of studentsSelected">{{student.ID_GRADO.COSTO_MATRICULA | currency}}</td>
+              <td>{{getTotalMatricula() | currency}}</td>
+            </tr>
+            <tr>
+              <td *ngFor="let student of studentsSelected">{{student.ID_GRADO.COSTO_MATRICULA+student.ID_GRADO.COSTO_PENSION | currency}}</td>
+              <td>{{getSubTotalCobro(1) | currency}}</td>
+            </tr>
+            <tr *ngIf="familia?.estudiantes[0].ID_CATE === 2 || familia?.estudiantes[0].ID_CATE === 3">
+              <td *ngFor="let student of studentsSelected" class="red">{{-getDescuentoEstudianteMatricula(student) | currency}}</td>
+              <td class="red">{{-getTotalDescuentoMatricula() | currency}}</td>
+            </tr>
+            <tr>
+              <td *ngFor="let student of studentsSelected" class="red">
+                  <span *ngIf="student.ID_CATE.id !== 1">{{-getDescuentoEstudiantePension(student,1) | currency}}</span>
+                  <span *ngIf="student.ID_CATE.id === 1 && student.DESC_AYUD_FIN !== '0'">-${{student.DESC_AYUD_FIN}}</span>
+                  <span *ngIf="student.ID_CATE.id === 1 && student.DESC_AYUD_FIN === '0'">{{-getDescuentoEstudiantePension(student,1) | currency}}</span>
+
+              </td>
+              <td class="red">
+
+                  {{-getTotalDescuentoPension(1) | currency}}
+
+              </td>
+            </tr>
+            <tr *ngIf="!noExisteAyudaFinancieraEstudiante() && familia?.estudiantes[0].ID_CATE === 4">
+                <td *ngFor="let student of studentsSelected" class="red">{{-transformtoNumber(student.DESC_AYUD_FIN) | currency}}</td>
+                <td class="red">{{-getTotalAyudaFinanciera(1) | currency}}</td>
+            </tr>
+            <tr *ngIf="familia?.estudiantes[0].ID_CATE === 1 && noExisteAyudaFinancieraEstudiante()">
+              <td *ngFor="let student of studentsSelected" class="red">
+
+                  <span *ngIf="student.DESC_AYUD_FIN === '0'">
+                      {{-(student.ID_GRADO.COSTO_PENSION*5)/100 | currency}}
+                  </span>
+                  <span *ngIf="student.DESC_AYUD_FIN !== '0'">
+                      $0.00
+                  </span>
+
+            </td>
+              <td class="red">{{-getTotalDescuentoPrepago(5) | currency}}</td>
+            </tr>
+            <tr *ngIf="existenCreditosEstudiante()">
+                <td *ngFor="let student of studentsSelected" class="red">-{{student.DESC_CREDITOS_MISION | currency}}</td>
+                <td class="red">-{{getTotalCreditosMision(1) | currency}}</td>
+            </tr>
+            <tr>
+              <td *ngFor="let student of studentsSelected" class="red">-{{(getDescuentoEstudianteTotal(student,1)) | currency}}</td>
+              <td class="red">-{{getTotalDescuento(1) | currency}}</td>
+            </tr>
+            <tr *ngIf="saldoPendienteSeleccionado">
+                <td *ngFor="let student of studentsSelected" id="td1">{{ getSaldoAnterior(student) | currency}}</td>
+                <td id="td1">{{ getTotalSaldoAnterior() | currency}}</td>
+            </tr>
+            <tr>
+              <td *ngFor="let student of studentsSelected">{{ getTotalEstudiante(student,1,true, true, true) | currency}}</td>
+              <td>{{ getTotal(1,true, true,true,false) | currency}}</td>
+          </tr>
+          <tr>
+            <td id="td2" colspan="2"><span class="help-block" style="color: red" *ngIf="metodoFormaPago.get('metodoPagoAnual')?.status === 'INVALID'">RECUERDE QUE DEBE SELECCIONAR UN METODO DE PAGO PARA CONTINUAR</span></td>
+          </tr>
+          <tr>
+            <td *ngFor="let student of studentsSelected">{{ getTotalEstudiante(student,1,true, false, true) | currency}}</td>
+            <td>{{ getTotal(1,true,false, true, false) | currency}}</td>
+          </tr>
+          <tr *ngIf="familia?.estudiantes[0].ID_CATE === 1">
+            <td></td>
+            <td></td>
+          </tr>
+          <br *ngIf="familia?.estudiantes[0].ID_CATE === 2 || familia?.estudiantes[0].ID_CATE === 3 || familia?.estudiantes[0].ID_CATE === 4">
+          <tr>
+            <td *ngFor="let student of studentsSelected">{{ getTotalEstudiante(student,1,true, true, true) | currency}}</td>
+            <td>{{ getTotal(1,true,true, true,false) | currency}}</td>
+          </tr>
+          <tr *ngIf="familia?.estudiantes[0].ID_CATE === 1">
+            <td></td>
+            <td></td>
+          </tr>
+          <br *ngIf="familia?.estudiantes[0].ID_CATE === 2 || familia?.estudiantes[0].ID_CATE === 3 || familia?.estudiantes[0].ID_CATE === 4">
+          <tr>
+            <td *ngFor="let student of studentsSelected">{{ getTotalEstudiante(student,1,true, false, true) | currency}}</td>
+            <td>{{ getTotal(1,true,false, true,false) | currency}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+    <div class="row">
+      <div class="col-md-3">
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="formaPago" id="pagoSemestral" formControlName="formaPago" value="Semestral">
+          <label class="form-check-label" for="pagoSemestral">
+            <h3>Semestral</h3>
+          </label>
+        </div>
+        <ul>
+          <li class="list-group-item">Nombre:</li>
+          <li class="list-group-item">Pensión:</li>
+          <li class="list-group-item">Matricula:</li>
+          <li class="list-group-item">Subtotal:</li>
+          <li class="list-group-item" *ngIf="familia?.estudiantes[0].ID_CATE === 2 || familia?.estudiantes[0].ID_CATE === 3">Descuento Matricula:</li>
+          <li class="list-group-item">Descuento:</li>
+          <li class="list-group-item" *ngIf="!noExisteAyudaFinancieraEstudiante() && familia?.estudiantes[0].ID_CATE === 4">Ayuda Financiera</li>
+          <li class="list-group-item" *ngIf="familia?.estudiantes[0].ID_CATE === 1 && noExisteAyudaFinancieraEstudiante()">Descuento prepago (%3):</li>
+          <li class="list-group-item" *ngIf="existenCreditosEstudiante()">Creditos Misión</li>
+          <li class="list-group-item">Subtotal Descuento:</li>
+          <li class="list-group-item" *ngIf="saldoPendienteSeleccionado">Saldo Anterior:</li>
+          <li class="list-group-item">Total Pago 1er Semestre: </li>
+          <li class="list-group-item" *ngIf="saldoAFavorSuperaPension()">Saldo a favor:</li>
+          <li class="list-group-item">Total Pago 2do Semestre: </li>
+          <li class="list-group-item"><strong>Método de pago:</strong></li>
+          <li class="list-group-item">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="metodoPagoSemestral" id="tarjetaSemestral"  formControlName="metodoPagoSemestral" value="Tarjeta de Crédito Semestral">
+                <label class="form-check-label" for="metodoPagoSemestral">
+                </label>
+            </div>
+          Tarjeta de credito
+          <span *ngIf="familia?.estudiantes[0].ID_CATE === 1">
+            (Sin dcto prepago)
+          </span>
+          :
+        </li>
+        <br *ngIf="familia?.estudiantes[0].ID_CATE === 1">
+        <li class="list-group-item">
+          <div class="form-check">
+              <input class="form-check-input" type="radio" name="metodoPagoSemestral" id="efectivoSemestral" formControlName="metodoPagoSemestral" value="Efectivo o Cheque Semestral">
+              <label class="form-check-label" for="metodoPagoSemestral">
+              </label>
+            </div>
+            Cheque o efectivo:
+        </li>
+        <li class="list-group-item">
+          <div class="form-check">
+              <input class="form-check-input" type="radio" name="metodoPagoSemestral" id="otrosSemestral" formControlName="metodoPagoSemestral" value="Otros">
+              <label class="form-check-label" for="metodoPagoSemestral">
+              </label>
+            Otro:
+            <input type="text" name="valorOtrosSemestral" id="valorOtrosSemestral"
+            formControlName="valorOtrosSemestral" [(ngModel)]="valorInputOtros"
+            [value]="valorInputOtros">
+            <label class="form-check-label" for="valorOtrosSemestral">
+            </label>
+          </div>
+        </li>
+      </ul>
+      </div>
+      <div class="col-md-9">
+        <hr>
+        <hr>
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col" *ngFor="let student of studentsSelected">{{ student.NOMBRE_EST }}</th>
+              <th scope="col">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td *ngFor="let student of studentsSelected">{{student.ID_GRADO.COSTO_PENSION/2 | currency}}</td>
+              <td>{{getTotalPension()/2 | currency}}</td>
+              <td >-</td>
+            </tr>
+            <tr>
+              <td *ngFor="let student of studentsSelected">{{student.ID_GRADO.COSTO_MATRICULA | currency}}</td>
+              <td>{{getTotalMatricula() | currency}}</td>
+            </tr>
+            <tr>
+              <td *ngFor="let student of studentsSelected" id="td1">{{(student.ID_GRADO.COSTO_MATRICULA)+student.ID_GRADO.COSTO_PENSION/2 | currency}}</td>
+              <td id="td1">{{getSubTotalCobro(2) | currency}}</td>
+            </tr>
+            <tr *ngIf="familia?.estudiantes[0].ID_CATE === 2 || familia?.estudiantes[0].ID_CATE === 3">
+              <td *ngFor="let student of studentsSelected" class="red">{{-getDescuentoEstudianteMatricula(student) | currency}}</td>
+              <td class="red">{{-getTotalDescuentoMatricula() | currency}}</td>
+            </tr>
+            <tr>
+              <td *ngFor="let student of studentsSelected" class="red">
+
+                  <span *ngIf="student.ID_CATE.id !== 1">{{-getDescuentoEstudiantePension(student,2) | currency}}</span>
+                  <span *ngIf="student.ID_CATE.id === 1 && student.DESC_AYUD_FIN !== '0'">-${{transformtoNumber(student.DESC_AYUD_FIN) / 2}}</span>
+                  <span *ngIf="student.ID_CATE.id === 1 && student.DESC_AYUD_FIN === '0'">{{-getDescuentoEstudiantePension(student,2) | currency}}</span>
+
+              </td>
+              <td class="red">{{-getTotalDescuentoPension(2) | currency}}</td>
+            </tr>
+            <tr *ngIf="!noExisteAyudaFinancieraEstudiante() && familia?.estudiantes[0].ID_CATE === 4">
+              <td *ngFor="let student of studentsSelected" class="red">{{-transformtoNumber(student.DESC_AYUD_FIN)/2 | currency}}</td>
+              <td class="red">{{-getTotalAyudaFinanciera(2) | currency}}</td>
+          </tr>
+            <tr *ngIf="familia?.estudiantes[0].ID_CATE === 1 && noExisteAyudaFinancieraEstudiante()">
+                <td *ngFor="let student of studentsSelected" class="red">
+
+                        <span *ngIf="student.DESC_AYUD_FIN === '0'">
+                            {{-(student.ID_GRADO.COSTO_PENSION*3/2)/100 | currency}}
+                        </span>
+                        <span *ngIf="student.DESC_AYUD_FIN !== '0'">
+                            $0.00
+                        </span>
+
+                </td>
+                <td class="red">{{-getTotalDescuentoPrepago(3) | currency}}</td>
+              </tr>
+              <tr *ngIf="existenCreditosEstudiante()">
+                <td *ngFor="let student of studentsSelected" class="red">{{-student.DESC_CREDITOS_MISION/2 | currency}}</td>
+                <td class="red">{{-getTotalCreditosMision(2) | currency}}</td>
+            </tr>
+            <tr>
+              <td *ngFor="let student of studentsSelected" class="red">{{-getDescuentoEstudianteTotal(student,2) | currency}}</td>
+              <td class="red">{{-getTotalDescuento(2) | currency}}</td>
+            </tr>
+            <tr *ngIf="saldoPendienteSeleccionado">
+                <td *ngFor="let student of studentsSelected">{{ getSaldoAnterior(student) | currency}}</td>
+                <td>{{ getTotalSaldoAnterior() | currency}}</td>
+            </tr>
+            <tr>
+              <td *ngFor="let student of studentsSelected">
+                <span *ngIf="!saldoAFavorSuperaPensionEstudiante(student)">{{ getTotalEstudiante(student,2,true,true, true) | currency}}</span>
+                <span *ngIf="saldoAFavorSuperaPensionEstudiante(student)">0</span>
+              </td>
+              <td>{{ getTotal(2,true,true,true,true) | currency}}</td>
+          </tr>
+          <tr *ngIf="saldoAFavorSuperaPension()">
+              <td *ngFor="let student of studentsSelected">
+                  <span *ngIf="saldoAFavorSuperaPensionEstudiante(student)">{{ getTotalEstudiante(student,2,true,true, true) | currency}}</span>
+                  <span *ngIf="!saldoAFavorSuperaPensionEstudiante(student)">0</span>
+              </td>
+              <td>{{ getTotal(2,true,true,true,false) | currency}}</td>
+          </tr>
+          <tr>
+            <td *ngFor="let student of studentsSelected">
+                <span *ngIf="saldoAFavorSuperaPensionEstudiante(student)">{{ getTotalEstudiante(student,2,false,true, false) + getTotalEstudiante(student,2,true,true, true) | currency}}</span>
+                <span *ngIf="!saldoAFavorSuperaPensionEstudiante(student)">{{ getTotalEstudiante(student,2,false,true, false) | currency}}</span>
+            </td>
+            <td>
+              <span *ngIf="saldoAFavorSuperaPension()">{{ getTotal(2,false,true, false, false) + getTotal(2,true,true, true, false) | currency}}</span>
+              <span *ngIf="!saldoAFavorSuperaPension()">{{ getTotal(2,false,true, true, false) | currency}}</span>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2" id="td2"><span class="help-block" style="color: red" *ngIf="metodoFormaPago.get('metodoPagoSemestral')?.status === 'INVALID'">RECUERDE QUE DEBE SELECCIONAR UN METODO DE PAGO PARA CONTINUAR</span></td>
+          </tr>
+          <tr>
+            <td *ngFor="let student of studentsSelected">
+                <span *ngIf="saldoAFavorSuperaPensionEstudiante(student)">{{ getTotalEstudiante(student,2,false,true, false) + getTotalEstudiante(student,2,true, false, true)| currency}}</span>
+                <span *ngIf="!saldoAFavorSuperaPensionEstudiante(student)">{{ getTotalEstudiante(student,2,true,false, true) | currency}}</span>
+            </td>
+            <td>
+              <span *ngIf="saldoAFavorSuperaPension()">{{ getTotal(2,false,true,false,false) + getTotal(2,true, false, true, false) | currency}}</span>
+              <span *ngIf="!saldoAFavorSuperaPension()">{{ getTotal(2,true,false,true,false) | currency}}</span>
+            </td>
+          </tr>
+          <tr *ngIf="familia?.estudiantes[0].ID_CATE === 1">
+            <td></td>
+            <td></td>
+          </tr>
+          <br *ngIf="familia?.estudiantes[0].ID_CATE === 2 || familia?.estudiantes[0].ID_CATE === 3 || familia?.estudiantes[0].ID_CATE === 4">
+          <tr>
+            <td *ngFor="let student of studentsSelected">
+                <span *ngIf="saldoAFavorSuperaPensionEstudiante(student)">{{ getTotalEstudiante(student,2,false,true, false) + getTotalEstudiante(student,2,true,true, true) | currency}}</span>
+                <span *ngIf="!saldoAFavorSuperaPensionEstudiante(student)">{{ getTotalEstudiante(student,2,true,true, true) | currency}}</span>
+            </td>
+            <td>
+              <span *ngIf="saldoAFavorSuperaPension()">{{ getTotal(2,false,true, false,false) + getTotal(2,true,true,true,false) | currency}}</span>
+              <span *ngIf="!saldoAFavorSuperaPension()">{{ getTotal(2,true,true, true,false) | currency}}</span>
+            </td>
+          </tr>
+          <tr *ngIf="familia?.estudiantes[0].ID_CATE === 1">
+            <td></td>
+            <td></td>
+          </tr>
+          <br *ngIf="familia?.estudiantes[0].ID_CATE === 2 || familia?.estudiantes[0].ID_CATE === 3 || familia?.estudiantes[0].ID_CATE === 4">
+          <tr>
+            <td *ngFor="let student of studentsSelected">
+                <span *ngIf="saldoAFavorSuperaPensionEstudiante(student)">{{ getTotalEstudiante(student,2,false,true, false) + getTotalEstudiante(student,2,true, false, true)| currency}}</span>
+                <span *ngIf="!saldoAFavorSuperaPensionEstudiante(student)">{{ getTotalEstudiante(student,2,true,false, true) | currency}}</span>
+            </td>
+            <td>
+              <span *ngIf="saldoAFavorSuperaPension()">{{ getTotal(2,false,true,false,false) + getTotal(2,true, false, true, false) | currency}}</span>
+              <span *ngIf="!saldoAFavorSuperaPension()">{{ getTotal(2,true,false, true,false) | currency}}</span>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+    <div class="row">
+      <div class="col-md-5"> </div>
+      <div class="col-md-7">
+        <button class="btn btn-primary" type="button" (click)="printThis()">Guardar Reporte</button>
+        <button class="btn btn-primary" type="button" (click)="onNavigateToInicio()" id="regresarButton">Regresar Pag. Inicio</button>
+        <button class="btn btn-primary" type="button" (click)="aprobarPagoSemestralMensual()" [ngStyle]="{'display': masOpciones ? 'inline-block' : 'none' }" id="masOpcionesButton">>>Mas Opciones de pago</button>
+      </div>
+    </div>
+    <div class="row" [hidden]="!aprobadoSemestralMensual">
+      <div class="col-md-3">
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="formaPago" id="pagoMensual"  formControlName="formaPago" value="Mensual">
+          <label class="form-check-label" for="pagoMensual">
+            <h3>Mensual</h3>
+          </label>
+        </div>
+        <ul>
+          <li class="list-group-item">Nombre:</li>
+          <li class="list-group-item" *ngIf="!saldoAFavorSuperaPension()">Pensión:</li>
+          <li class="list-group-item" *ngIf="!saldoAFavorSuperaPension()">Matricula:</li>
+          <li class="list-group-item" *ngIf="!saldoAFavorSuperaPension()">Subtotal:</li>
+          <li class="list-group-item" *ngIf="familia?.estudiantes[0].ID_CATE === 2 || familia?.estudiantes[0].ID_CATE === 3">Descuento Matricula:</li>
+          <li class="list-group-item">Descuento:</li>
+          <li class="list-group-item" *ngIf="!noExisteAyudaFinancieraEstudiante() && familia?.estudiantes[0].ID_CATE === 4">Ayuda Financiera:</li>
+          <li class="list-group-item" *ngIf="existenCreditosEstudiante()">Creditos Misión</li>
+          <li class="list-group-item">Subtotal Descuento:</li>
+          <li class="list-group-item" *ngIf="saldoPendienteSeleccionado">Saldo Anterior:</li>
+          <li class="list-group-item" *ngIf="!saldoAFavorSuperaPension()">Total Pago Primer Mes: </li>
+          <li class="list-group-item">Total Pago Mensual: </li>
+          <li class="list-group-item"><strong>Método de pago:</strong></li>
+           <li class="list-group-item">
+              <div class="form-check">
+                  <input class="form-check-input" type="radio" name="metodoPagoMensual" id="tarjetaMensual"  formControlName="metodoPagoMensual" value="Tarjeta de Crédito Mensual">
+                  <label class="form-check-label" for="metodoPagoMensual">
+                  </label>
+              </div>
+            Tarjeta de credito:
+          </li>
+          <br *ngIf="familia?.estudiantes[0].ID_CATE === 1">
+          <li class="list-group-item">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="metodoPagoMensual" id="efectivoMensual" formControlName="metodoPagoMensual" value="Efectivo o Cheque Mensual">
+                <label class="form-check-label" for="metodoPagoMensual">
+                </label>
+              </div>
+              Cheque o efectivo:
+          </li>
+          <li class="list-group-item">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="metodoPagoMensual" id="debitoMensual"  formControlName="metodoPagoMensual" value="Débito Bancario">
+                <label class="form-check-label" for="metodoPagoMensual">
+                </label>
+            </div>
+          Débito Bancario:
+        </li>
+        <li class="list-group-item">
+          <div class="form-check">
+              <input class="form-check-input" type="radio" name="metodoPagoMensual" id="internetMensual"  formControlName="metodoPagoMensual" value="Pago por Internet">
+              <label class="form-check-label" for="metodoPagoMensual">
+              </label>
+          </div>
+        Pago por Internet:
+        </li>
+        <li class="list-group-item">
+          <div class="form-check">
+              <input class="form-check-input" type="radio" name="metodoPagoMensual" id="otrosMensual" formControlName="metodoPagoMensual" value="Otros">
+              <label class="form-check-label" for="metodoPagoMensual">
+              </label>
+            Otro:
+            <input type="text" name="valorOtrosMensual" id="valorOtrosMensual"
+            formControlName="valorOtrosMensual" [(ngModel)]="valorInputOtros"
+            [value]="valorInputOtros">
+            <label class="form-check-label" for="valorOtrosMensual">
+            </label>
+          </div>
+        </li>
+        </ul>
+
+      </div>
+      <div class="col-md-9">
+        <hr>
+        <hr>
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col" *ngFor="let student of studentsSelected">{{ student.NOMBRE_EST }}</th>
+              <th scope="col">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="!saldoAFavorSuperaPension()">
+              <td *ngFor="let student of studentsSelected">{{student.ID_GRADO.COSTO_PENSION/10 | currency}}</td>
+              <td>{{getTotalPension()/10 | currency}}</td>
+              <td >-</td>
+            </tr>
+            <tr *ngIf="!saldoAFavorSuperaPension()">
+              <td *ngFor="let student of studentsSelected">{{student.ID_GRADO.COSTO_MATRICULA | currency}}</td>
+              <td>{{getTotalMatricula() | currency}}</td>
+            </tr>
+            <tr *ngIf="!saldoAFavorSuperaPension()">
+              <td *ngFor="let student of studentsSelected" id="td1">{{student.ID_GRADO.COSTO_MATRICULA+student.ID_GRADO.COSTO_PENSION/10 | currency}}</td>
+              <td id="td1">{{getSubTotalCobro(10) | currency}}</td>
+            </tr>
+            <tr *ngIf="familia?.estudiantes[0].ID_CATE === 2 || familia?.estudiantes[0].ID_CATE === 3">
+              <td *ngFor="let student of studentsSelected" class="red">{{-getDescuentoEstudianteMatricula(student) | currency}}</td>
+              <td class="red">{{-getTotalDescuentoMatricula() | currency}}</td>
+            </tr>
+            <tr>
+              <td *ngFor="let student of studentsSelected" class="red">
+
+                  <span *ngIf="student.ID_CATE.id !== 1">{{-getDescuentoEstudiantePension(student,10) | currency}}</span>
+                  <span *ngIf="student.ID_CATE.id === 1 && student.DESC_AYUD_FIN !== '0'">-${{transformtoNumber(student.DESC_AYUD_FIN) / 10}}</span>
+                  <span *ngIf="student.ID_CATE.id === 1 && student.DESC_AYUD_FIN === '0'">{{-getDescuentoEstudiantePension(student,10) | currency}}</span>
+
+              </td>
+              <td class="red">{{-getTotalDescuentoPension(10) | currency}}</td>
+            </tr>
+            <tr *ngIf="!noExisteAyudaFinancieraEstudiante() && familia?.estudiantes[0].ID_CATE === 4">
+              <td *ngFor="let student of studentsSelected" class="red">{{- transformtoNumber(student.DESC_AYUD_FIN) / 10 | currency}}</td>
+              <td class="red">{{-getTotalAyudaFinanciera(10) | currency}}</td>
+          </tr>
+          <tr *ngIf="existenCreditosEstudiante()">
+            <td *ngFor="let student of studentsSelected" class="red">{{-student.DESC_CREDITOS_MISION / 10 | currency}}</td>
+            <td class="red">{{-getTotalCreditosMision(10) | currency}}</td>
+          </tr>
+            <tr>
+              <td *ngFor="let student of studentsSelected" class="red">{{-getDescuentoEstudianteTotal(student,10) | currency}}</td>
+              <td class="red">{{-getTotalDescuento(10) | currency}}</td>
+            </tr>
+            <tr *ngIf="saldoPendienteSeleccionado">
+                <td *ngFor="let student of studentsSelected">{{ getSaldoAnterior(student) | currency}}</td>
+                <td>{{ getTotalSaldoAnterior() | currency}}</td>
+            </tr>
+            <tr *ngIf="!saldoAFavorSuperaPension()">
+              <td *ngFor="let student of studentsSelected">
+                <span>  {{ getTotalEstudiante(student,10,true,true,true) | currency}} </span>
+              </td>
+              <td>{{ getTotal(10,true, true,true,false) | currency}}</td>
+          </tr>
+          <tr>
+            <td *ngFor="let student of studentsSelected">
+             <span *ngIf="!saldoAFavorSuperaPensionEstudiante(student)">{{ getTotalEstudiante(student,10,false, false, false) | currency}}</span>
+             <span *ngIf="saldoAFavorSuperaPensionEstudiante(student)">{{ (getTotal(2,false,true,false,false) + getTotal(2,true, false, true, false)) / 10 | currency}}</span>
+            </td>
+            <td>{{ getTotal(10,false, true, false,false) | currency}}</td>
+          </tr>
+          <tr>
+            <td colspan="2" id="td2"><span class="help-block" style="color: red" *ngIf="metodoFormaPago.get('metodoPagoMensual')?.status === 'INVALID'">RECUERDE QUE DEBE SELECCIONAR UN METODO DE PAGO PARA CONTINUAR</span></td>
+          </tr>
+          <tr>
+            <td *ngFor="let student of studentsSelected">
+              <span *ngIf="!saldoAFavorSuperaPensionEstudiante(student)">{{ getTotalEstudiante(student,10,true, false, true) | currency}}</span>
+              <span *ngIf="saldoAFavorSuperaPensionEstudiante(student)">{{ (getTotal(2,false,true,false,false) + getTotal(2,true, false, true, false)) / 10 | currency}}</span>
+            </td>
+            <td>{{ getTotal(10,true,false,true,false) | currency}}</td>
+          </tr>
+          <tr *ngIf="familia?.estudiantes[0].ID_CATE === 1">
+            <td></td>
+            <td></td>
+          </tr>
+          <br *ngIf="familia?.estudiantes[0].ID_CATE === 2 || familia?.estudiantes[0].ID_CATE === 3 || familia?.estudiantes[0].ID_CATE === 4">
+          <tr>
+            <td *ngFor="let student of studentsSelected">
+              <span *ngIf="!saldoAFavorSuperaPensionEstudiante(student)">{{ getTotalEstudiante(student,10,true, true,true) | currency}}</span>
+              <span *ngIf="saldoAFavorSuperaPensionEstudiante(student)">{{ (getTotal(2,false,true,false,false) + getTotal(2,true, false, true, false)) / 10 | currency}}</span>
+            </td>
+            <td>{{ getTotal(10,true,true,true,false) | currency}}</td>
+          </tr>
+          <br>
+          <tr>
+            <td *ngFor="let student of studentsSelected">
+                <span *ngIf="!saldoAFavorSuperaPensionEstudiante(student)">{{ getTotalEstudiante(student,10,true, true,true) | currency}}</span>
+                <span *ngIf="saldoAFavorSuperaPensionEstudiante(student)">{{ (getTotal(2,false,true,false,false) + getTotal(2,true, false, true, false)) / 10 | currency}}</span>
+            </td>
+            <td>{{ getTotal(10,true,true,true,false) | currency}}</td>
+          </tr>
+          <br>
+          <tr>
+            <td *ngFor="let student of studentsSelected">
+                <span *ngIf="!saldoAFavorSuperaPensionEstudiante(student)">{{ getTotalEstudiante(student,10,true, true,true) | currency}}</span>
+                <span *ngIf="saldoAFavorSuperaPensionEstudiante(student)">{{ (getTotal(2,false,true,false,false) + getTotal(2,true, false, true, false)) / 10 | currency}}</span>
+            </td>
+            <td>{{ getTotal(10,true,true,true,false) | currency}}</td>
+          </tr>
+          <br>
+          <tr>
+            <td *ngFor="let student of studentsSelected">
+                <span *ngIf="!saldoAFavorSuperaPensionEstudiante(student)">{{ getTotalEstudiante(student,10,true, true,true) | currency}}</span>
+                <span *ngIf="saldoAFavorSuperaPensionEstudiante(student)">{{ (getTotal(2,false,true,false,false) + getTotal(2,true, false, true, false)) / 10 | currency}}</span>
+            </td>
+            <td>{{ getTotal(10,true,true,true,false) | currency}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-md-9"></div>
+        <div class="col-md-3">
+          <button class="btn btn-primary btn-lg" type="submit" [disabled]="!metodoFormaPago.valid">Ir a reporte de pago</button>
+        </div>
+    </div>
+</div>
+</form>
+<br><br>

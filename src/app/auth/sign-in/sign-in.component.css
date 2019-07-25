@@ -1,0 +1,14 @@
+label{
+    display: inline-block;
+    text-align: right;
+}
+
+.center-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.center_div{
+    margin: 0 auto;
+    width:50% /* value of your choice which suits your alignment */
+}

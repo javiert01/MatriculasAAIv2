@@ -1,0 +1,184 @@
+  <div class="jumbotron">
+      <h2 class="text-center">
+          <em>Reporte de pagos</em>
+      </h2>      
+  </div>
+  <div>
+    <img src="assets/Images/header.jpg" alt="" style="width:20px; height: 10px;">
+  </div>
+ <div id="content" #content>
+  <div class="container">
+      <h4>Informacion del estudiante:</h4>           
+      <table class="table table-bordered" id="tableInformacion">
+        <thead>
+          <tr>
+            <th>Codigo</th>
+            <th>Nombre</th>
+            <th>Grado</th>
+            <th>Categoria</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let student of students">
+            <td>{{student?.CODIGO_EST}}</td>
+            <td>
+              {{ student?.NOMBRE_EST }}
+            </td>
+            <td>{{ student?.ID_GRADO.TIPO_GRADO}}</td>
+            <td>{{student?.ID_CATE.TIPO_CATE}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+          <div class="container">
+               <h4>Detalle de pagos</h4>
+               <div class="row">
+                 <div class="col-md-4 col-xs-4 col-lg-4 col-print-4 list-group">
+                  <ul>
+                  <li class="list-group-item">Nombre:</li>
+                  <li class="list-group-item">Pensión:</li>
+                  <li class="list-group-item">Matricula:</li>
+                  <li class="list-group-item">Subtotal:</li>
+                  <li class="list-group-item" *ngIf="students[0]?.ID_CATE.id === 2 || students[0]?.ID_CATE.id === 3">Descuento Matricula:</li>
+                  <li class="list-group-item">Descuento:</li>
+                  <li class="list-group-item" *ngIf="!noExisteAyudaFinancieraEstudiante() && students[0]?.ID_CATE === 4">Ayuda Financiera</li>
+                  <li class="list-group-item" *ngIf="existeDescuentoPrepago()">Descuento prepago:</li>
+                  <li class="list-group-item" *ngIf="existenCreditosEstudiante()">Creditos Misión</li>
+                  <li class="list-group-item">Subtotal Descuento:</li>
+                  <li class="list-group-item" *ngIf="existeSaldoPendiente()">Saldo Anterior:</li>
+                  <li class="list-group-item">{{totalMensaje}}:</li>
+                  <li class="list-group-item" *ngIf="saldoAFavorSuperaPension()">Saldo a favor:</li>
+                  <li class="list-group-item" *ngIf="planPago !== 1">{{segundoMensaje}}:</li>
+                  <li class="list-group-item">Forma de pago:</li>
+                  <li class="list-group-item">Método de pago:</li>
+               </ul>
+              </div>
+              <div class="col-md-8 col-print-8 table-responsive" style="display:inline-block">
+                  <table class="table">
+                      <thead>
+                        <tr>
+                          <th scope="col" *ngFor="let student of students">{{ reducirNombre(student.NOMBRE_EST) }}</th>
+                          <th scope="col">Total</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td *ngFor="let student of students">{{student.ID_GRADO.COSTO_PENSION/planPago | currency}}</td>
+                          <td>{{getTotalPension() | currency}}</td>
+                          <td >-</td>
+                        </tr>
+                        <tr>
+                          <td *ngFor="let student of students">{{student.ID_GRADO.COSTO_MATRICULA | currency}}</td>
+                          <td>{{getTotalMatricula() | currency}}</td>
+                        </tr>
+                        <tr>
+                          <td *ngFor="let student of students">{{student.ID_GRADO.COSTO_MATRICULA+(student.ID_GRADO.COSTO_PENSION / planPago) | currency}}</td>
+                          <td>{{getSubtotalCobro() | currency}}</td>
+                        </tr>
+                        <tr *ngIf="students[0]?.ID_CATE.id === 2 || students[0]?.ID_CATE.id === 3">
+                          <td *ngFor="let student of students"><font color="red">{{-getDescuentoEstudianteMatricula(student) | currency}}</font></td>
+                          <td><font color="red">{{-getTotalDescuentoMatricula() | currency}}</font></td>
+                        </tr>
+                        <tr>
+                          <td *ngFor="let student of students">
+                            <font color="red">
+                              <span *ngIf="student.ID_CATE.id !== 1">{{-getDescuentoEstudiantePension(student) | currency}}</span>
+                              <span *ngIf="student.ID_CATE.id === 1 && student.DESC_AYUD_FIN !== '0'">-${{student.DESC_AYUD_FIN}}</span>
+                              <span *ngIf="student.ID_CATE.id === 1 && student.DESC_AYUD_FIN === '0'">{{-getDescuentoEstudiantePension(student) | currency}}</span>
+                            </font>
+                          </td>
+                          <td>
+                            <font color="red">
+                              {{-getTotalDescuentoPension() | currency}}
+                            </font>
+                          </td>
+                        </tr>
+                        <tr *ngIf="!noExisteAyudaFinancieraEstudiante() && students[0]?.ID_CATE === 4">
+                            <td *ngFor="let student of students"><font color="red">{{-student.DESC_AYUD_FIN | currency}}</font></td>
+                            <td><font color="red">{{-getTotalAyudaFinanciera(1) | currency}}</font></td>
+                        </tr>
+                        <tr *ngIf="existeDescuentoPrepago()">
+                          <td *ngFor="let student of students">
+                            <font color="red">
+                             <span> {{-(student.ID_DESC_REPORTE.DESC_PREPAGO) | currency}}</span>
+                          </font>
+                        </td>
+                          <td><font color="red">{{-getTotalDescuentoPrepago() | currency}}</font></td>
+                        </tr>
+                        <tr *ngIf="existenCreditosEstudiante()">
+                            <td *ngFor="let student of students"><font color="red">-{{student.DESC_CREDITOS_MISION | currency}}</font></td>
+                            <td><font color="red">-{{getTotalCreditosMision() | currency}}</font></td>
+                        </tr>
+                        <tr>
+                          <td *ngFor="let student of students"><font color="red">-{{ student.ID_DESC_REPORTE.TOTAL_DESCUENTO | currency}}</font></td>
+                          <td><font color="red">-{{getTotalDescuento() | currency}}</font></td>
+                        </tr>
+                        <tr *ngIf="existeSaldoPendiente()">
+                            <td *ngFor="let student of students">{{ getSaldoAnterior(student) | currency}}</td>
+                            <td>{{ getTotalSaldoAnterior() | currency}}</td> 
+                        </tr>
+                        <tr>
+                          <td *ngFor="let student of students">
+                            <span *ngIf="saldoAFavorSuperaPensionEstudiante(student)">0</span>
+                          <span *ngIf="!saldoAFavorSuperaPensionEstudiante(student)">{{ student.ID_PAGO_REPORTE.TOTAL_PAGO | currency}}</span>
+                          </td>
+                          <td>{{ getTotal(false,true) | currency}}</td> 
+                      </tr>
+                      <tr *ngIf="saldoAFavorSuperaPension()">
+                        <td *ngFor="let student of students">
+                          <span *ngIf="!saldoAFavorSuperaPensionEstudiante(student)">0</span>
+                          <span *ngIf="saldoAFavorSuperaPensionEstudiante(student)">{{ getSaldoAFavorStudent(student) | currency}}</span>
+                        </td>
+                        <td>{{ getTotalSaldoAFavor() | currency}}</td> 
+                    </tr>
+                      <tr *ngIf="planPago !== 1">
+                        <td *ngFor="let student of students">{{ get2ndoPago(student) | currency}}</td>
+                        <td>{{ getTotal2ndoPago() | currency}}</td> 
+                    </tr>
+                      <tr>
+                        <td *ngFor="let student of students">{{ student.ID_PAGO_REPORTE.FORMA_PAGO }}</td>
+                        <td>-</td> 
+                      </tr>
+                      <tr>
+                        <td *ngFor="let student of students">{{ student.ID_PAGO_REPORTE.METODO_PAGO }}</td>
+                        <td>-</td> 
+                      </tr>
+                      </tbody>
+                    </table>
+              </div>
+            </div>
+          <div class="row">
+            <div class="col-md-6 col-print-6">
+                <br>
+                <p>Por favor notar que:</p>
+                <p>La fecha de pagos es hasta el dia 5 del mes</p>
+                <p><strong>Año lectivo 2018-2019</strong></p>
+                <tr></tr>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 col-print-6">
+              <br><br>
+                <hr style="height: 1px; width: 300px" color="black" align="left">
+                <p>Firma</p>
+                <p>Fecha: {{fecha | date:'yyyy-MM-dd HH:mm a'}}</p>
+                <p>Atendido por: {{user.NOMBRE}}</p>
+            </div>          
+          </div>
+          </div>
+        </div>
+          <div class="row">
+              <div class="col-md-6 col-print-3"></div>
+              <div class="col-md-6 col-print-3">
+                <button class="btn btn-primary btn-lg" id="regresarButton"(click)="onNavigateToOpcionesPago()">Regresar a Opciones de Pago</button>
+              </div>
+              <div class="col-md-3 col-print-3">
+              <button class="btn btn-primary btn-lg" id="imprimirButton" (click)="onImprimirReporte()">Imprimir Reporte</button>
+              </div>
+              <div class="col-md-3 col-print-3">
+                <button class="btn btn-primary btn-lg" (click)="onNavigateToInicio()" id="finalizarButton" [disabled]="procesoFinalizado">
+                  Finalizar Proceso
+                </button>
+              </div>
+          </div>
+

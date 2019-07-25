@@ -1,0 +1,77 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <h1>Registro de estudiante</h1>
+    </div>
+  </div>
+</div>
+<div class="container-fluid">
+    <form [formGroup]="registroEstudianteForm" (ngSubmit)="enviarDatosEstudiante()">
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="nombre">Nombres *</label>
+            <input type="text" class="form-control" id="nombres" placeholder="Ingrese los nombres" formControlName="nombres">
+          </div>
+          <div class="form-group col-md-6">
+            <label for="apellido">Apellidos *</label>
+            <input type="text" class="form-control" id="apellidos" placeholder="Ingrese los apellidos" formControlName="apellidos">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="categoria">Categoría*</label>
+            <select class="form-control">
+                <option>Normal</option>
+                <option>Misionero</option>
+                <option>Staff Tiempo Completo</option>
+                <option>Profesor Tiempo Completo</option>
+              </select>
+          </div>
+          <div class="form-group col-md-6">
+              <label for="grado">Grado*</label>
+              <select class="form-control">
+                  <option>PS3 - Nursery</option>
+                  <option>PS4 - Pre-school</option>
+                  <option>K - Primero de Básica</option>
+                  <option>1er Grado</option>
+                  <option>2do Grado</option>
+                  <option>3er Grado</option>
+                  <option>4to Grado</option>
+                  <option>5to Grado</option>
+                  <option>6to Grado</option>
+                  <option>7mo Grado</option>
+                  <option>8vo Grado</option>
+                  <option>9no Grado</option>
+                  <option>10mo Grado</option>
+                  <option>11vo Grado</option>
+                  <option>12vo Grado</option>
+              </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="col-md-12 form-group">
+              <p>Seleccione la familia del estudiante:</p>
+              <label for="search">Buscar Familia:</label>
+              <input type="text" name="search" placeholder="Buscar..." (keyup)="getResultSearchArray()" #searchInput>
+          </div>
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-6 pre-scrollable">
+                <a
+                [id]="familia.id"
+                (click)="changeClassID(familia.id); onGetIndex(familia.id);"
+                  style="cursor: pointer;"
+                  class="list-group-item clearfix" *ngFor="let familia of listaFamilia">
+                <div class="pull-left">
+                  <p class="list-group-item-heading">{{familia.NOMB_FAMILIA}}</p>
+                </div>
+                </a>
+              </div>
+          </div>
+        <span *ngIf="!registroEstudianteForm?.valid" class="help-block">Recuerde llenar todos los campos para continuar</span><br>
+        <button type="submit" class="btn btn-primary" [disabled]="!registroEstudianteForm?.valid">Aplicar</button>
+      </form>
+</div>
+

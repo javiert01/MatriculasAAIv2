@@ -1,0 +1,14 @@
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+          <a href="#" class="navbar-left"><img src="assets/Images/header.jpg" (click)="_authService.logoutUser()"></a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li class="active" [routerLink]="['/estudiantes']"><a>Lista Estudiantes</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a *ngIf="!_authService.loggedIn()"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+      <li><a style="cursor:pointer" *ngIf="_authService.loggedIn()" (click)="_authService.logoutUser()"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+    </ul>
+  </div>
+</nav>

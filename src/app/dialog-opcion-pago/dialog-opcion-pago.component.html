@@ -1,0 +1,15 @@
+<div>
+  <h2 mat-dialog-title>Atención!</h2>
+  <mat-dialog-content>
+      <p>Revise la información antes de continuar</p>
+      <ul>
+          <li>Forma de pago: {{formaPago}}</li>
+          <li>Metodo de pago: {{metodoPago}}</li>
+        </ul>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+      <button class="mat-raised-button"(click)="aceptar()">Aceptar</button>
+      <button class="mat-raised-button"(click)="close()">Cancelar</button>
+  </mat-dialog-actions>
+</div>
+

@@ -1,0 +1,29 @@
+<div *ngIf="mensaje === '1'">
+  <h2 mat-dialog-title>Ha ocurrido un error!</h2>
+  <mat-dialog-content>
+      <p>El usuario ingresado no existe! Inténtalo otra vez.</p>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+      <button class="mat-raised-button"(click)="close()">Cerrar</button>
+  </mat-dialog-actions>
+</div>
+<div *ngIf="mensaje === '2'">
+<h2 mat-dialog-title>Ha ocurrido un error!</h2>
+<mat-dialog-content>
+    <p>La contraseña es incorrecta, por favor vuelve a ingresarla.</p>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button class="mat-raised-button"(click)="close()">Cerrar</button>
+</mat-dialog-actions>
+</div>
+<div *ngIf="mensaje !== '1' && mensaje !== '2'">
+  <h2 mat-dialog-title>Atención!</h2>
+  <mat-dialog-content>
+      <p>El servicio no se encuentra disponible en este momento</p>
+      <p>Por favor, consulte con TI o vuelva a intentarlo después</p>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+      <button class="mat-raised-button"(click)="close()">Cerrar</button>
+  </mat-dialog-actions>
+</div>
+

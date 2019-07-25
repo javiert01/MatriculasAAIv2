@@ -1,0 +1,11 @@
+<div>
+    <h2 mat-dialog-title>Atención!</h2>
+    <mat-dialog-content>
+        <p *ngIf="opcion === 'Cancelar el saldo pendiente'">¿Está seguro de que desea cancelar el saldo pendiente? (esta acción no se puede revertir)</p>
+    <p *ngIf="opcion === 'Añadir saldo pendiente a pago actual'">¿Está seguro de que desea añadir el saldo pendiente al pago actual? (esta acción no se puede revertir)</p>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+        <button class="mat-raised-button"(click)="aceptar()">Aceptar</button>
+        <button class="mat-raised-button"(click)="close()">Cancelar</button>
+    </mat-dialog-actions>
+  </div>

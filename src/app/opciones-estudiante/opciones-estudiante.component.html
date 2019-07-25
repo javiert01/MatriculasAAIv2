@@ -1,0 +1,26 @@
+<div class="row">
+    <div class="col-md-12">
+      <h1>Opciones de Estudiantes</h1>
+    </div>
+</div>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2">
+        <div class="div-list">
+            <ul>
+              <li [routerLink]="['/opciones-estudiantes/registro-estudiante']">
+                <h3>Registro de Nuevo Estudiante</h3>
+                <p>Utilice esta opción para registrar en el sistema un nuevo estudiante</p>
+              </li>
+              <li [routerLink]="['/opciones-estudiantes/editar-estudiante']">
+                <h3>Editar Información de Estudiante</h3>
+                <p>Edite los datos de un estudiante, como su nombre, familia, grado, etc.</p>
+              </li>
+            </ul>
+          </div>
+    </div>
+    <div class="col-md-10">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

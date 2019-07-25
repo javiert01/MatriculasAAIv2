@@ -1,0 +1,48 @@
+<div class="container">
+    <h1 class="well">Crear cuenta</h1>
+	<div class="col-lg-12 well">
+	<div class="row">
+				<form>
+				<div class="col-sm-12">
+        <form (ngSubmit)="registerUser(myForm); myForm.reset()" #myForm="ngForm">
+				<div class="row">
+					<div class="col-sm-6 form-group">
+					<label>Nombre y Apellido</label>
+					<input [(ngModel)]="registerUserData.NOMBRE" type="text" placeholder="Ingrese su Nombre y Apellido.." class="form-control" name="NOMBRE">
+					</div>
+            </div>
+            <div class="row">
+				<div class="col-sm-6 form-group">
+					<label>Nombre de Usuario</label>
+							<input [(ngModel)]="registerUserData.username" type="text" placeholder="Ingrese su nombre de Usuario.." class="form-control" name="username">
+			</div>
+			</div>
+			<div class="row">
+					<div class="col-sm-6 form-group">
+							<label for="sel1">Seleccionar tipo de usuario:</label>
+							<select [(ngModel)]="registerUserData.rol"  name="rol" class="form-control" id="sel1">
+							  <option>Administrador</option>
+							  <option>Normal</option>
+							</select>
+							<br>
+					</div>
+			</div>
+            <div class="row">
+				<div class="col-sm-6 form-group">
+					<label>Contraseña</label>
+							<input [(ngModel)]="registerUserData.password" type="password" placeholder="Ingrese su Contraseña.." class="form-control" name="password">
+				</div>
+      </div>
+          <div class="center-btn"><button class="btn btn-success" type="submit">Aceptar</button></div>
+            </form>
+					</div>
+				</form>
+				</div>
+	</div>
+	</div>
+	<div class="row">
+            <div class="col-md-9"></div>
+            <div class="col-md-3">
+			<a href="/admin-page" class="btn btn-info" role="button">Atras</a>
+            </div>
+        </div>

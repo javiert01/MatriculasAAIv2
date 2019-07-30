@@ -39,6 +39,18 @@ import { RegistroEstudianteComponent } from './opciones-estudiante/registro-estu
 import { EditarEstudianteComponent } from './opciones-estudiante/editar-estudiante/editar-estudiante.component';
 import { DialogOpcionPagoComponent } from './dialog-opcion-pago/dialog-opcion-pago.component';
 import { DialogSaldoPendienteComponent } from './dialog-saldo-pendiente/dialog-saldo-pendiente.component';
+import { OpcionesGradoListaComponent } from './opciones-grado/opciones-grado-lista/opciones-grado-lista.component';
+import { OpcionesGradoDetalleComponent } from './opciones-grado/opciones-grado-detalle/opciones-grado-detalle.component';
+import { DialogEditarGradoComponent } from './dialog-editar-grado/dialog-editar-grado.component';
+import { OpcionesCategoriaListaComponent } from './opciones-categoria/opciones-categoria-lista/opciones-categoria-lista.component';
+import { OpcionesCategoriaDetalleComponent } from './opciones-categoria/opciones-categoria-detalle/opciones-categoria-detalle.component';
+import { DialogEditarCategoriaComponent } from './dialog-editar-categoria/dialog-editar-categoria.component';
+import { RegistroFamiliaComponent } from './opciones-familia/registro-familia/registro-familia.component';
+import { EditarFamiliaComponent } from './opciones-familia/editar-familia/editar-familia.component';
+import { DialogRegistroFamiliaComponent } from './dialog-registro-familia/dialog-registro-familia.component';
+import { ListaFamiliasComponent } from './opciones-familia/editar-familia/lista-familias/lista-familias.component';
+import { DetalleFamiliaComponent } from './opciones-familia/editar-familia/detalle-familia/detalle-familia.component';
+import { DialogEditarFamiliaComponent } from './dialog-editar-familia/dialog-editar-familia.component';
 
 @NgModule({
   declarations: [
@@ -62,7 +74,19 @@ import { DialogSaldoPendienteComponent } from './dialog-saldo-pendiente/dialog-s
     RegistroEstudianteComponent,
     EditarEstudianteComponent,
     DialogOpcionPagoComponent,
-    DialogSaldoPendienteComponent
+    DialogSaldoPendienteComponent,
+    OpcionesGradoListaComponent,
+    OpcionesGradoDetalleComponent,
+    DialogEditarGradoComponent,
+    OpcionesCategoriaListaComponent,
+    OpcionesCategoriaDetalleComponent,
+    DialogEditarCategoriaComponent,
+    RegistroFamiliaComponent,
+    EditarFamiliaComponent,
+    DialogRegistroFamiliaComponent,
+    ListaFamiliasComponent,
+    DetalleFamiliaComponent,
+    DialogEditarFamiliaComponent
   ],
   imports: [
     BrowserModule,
@@ -83,6 +107,7 @@ import { DialogSaldoPendienteComponent } from './dialog-saldo-pendiente/dialog-s
     multi: true
   }],
   bootstrap: [AppComponent],
-  entryComponents: [LoginDialogComponent, DialogOpcionPagoComponent, DialogSaldoPendienteComponent]
+  entryComponents: [LoginDialogComponent, DialogOpcionPagoComponent, DialogSaldoPendienteComponent, DialogEditarGradoComponent,
+  DialogEditarCategoriaComponent, DialogRegistroFamiliaComponent, DialogEditarFamiliaComponent]
 })
 export class AppModule { }

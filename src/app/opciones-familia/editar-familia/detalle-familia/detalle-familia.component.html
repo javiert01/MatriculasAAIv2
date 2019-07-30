@@ -1,0 +1,28 @@
+<form [formGroup]="editarFamiliaForm" *ngIf="familia" (ngSubmit)="actualizarDatos()">
+    <div class="form-row">
+        <div class="col-md-6">
+          <label for="nombreFamilia">Nombre de la Familia:</label>
+          <input type="text" class="form-control" id="nombreFamilia" formControlName="nombreFamilia">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="col-md-6">
+          <label for="numHijos">Número de Hijos:</label>
+          <input type="number" class="form-control" id="numHijos" formControlName="numHijos">
+        </div>
+      </div>
+      <div class="form-row">
+          <div class="col-md-6">
+            <label for="descuentoFamilia">Descuento (en dólares: 1500 si tiene 3 hijos o más, 500 si tiene 2 hijos, etc.):</label>
+            <input type="number" class="form-control" id="descuentoFamilia" formControlName="descuentoFamilia">
+          </div>
+        </div>
+      <div class="row">
+        <div class="col-md-9"></div>
+        <div class="col-md-3">
+            <button class="btn btn-primary btn-lg" type="submit">Actualizar</button>
+            <button class="btn btn-danger btn-lg" type="button" (click)="onReturn()">Cancelar</button>
+        </div>
+      </div>
+    </form>
+    

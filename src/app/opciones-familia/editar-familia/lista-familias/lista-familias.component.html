@@ -1,0 +1,39 @@
+<div class="row">
+    <div class="col-md-2">
+    </div>
+    <div class="col-md-7">
+      <form>
+        <label for="search">Buscar Familia:</label>
+        <input type="text" name="search" placeholder="Buscar..." (keyup)="getResultSearchArray()" #searchInput>
+      </form>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-2">
+    </div>
+    <div class="col-md-6" [hidden]="loading">
+        <p>Cargando familias ...</p>
+    </div>
+  </div>
+  <div [hidden]="!loading">
+      <div class="row">
+          <div class="col-md-2">
+          </div>
+          <div class="col-md-6 pre-scrollable">
+              <a
+              [id]="familia.id"
+              (click)="changeClassID(familia.id); onGetIndex(familia.id);"
+                style="cursor: pointer;"
+                class="list-group-item clearfix" *ngFor="let familia of listaFamilias">
+              <div class="pull-left">
+                <p class="list-group-item-heading">{{familia?.NOMB_FAMILIA}}</p>
+              </div>
+              </a>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+          <div class="col-md-7"></div>
+          <div class="col-md-2"><button [routerLink]="['/opciones-familias/editar-familia', index]" class="btn btn-primary">Aceptar</button></div>
+        </div>
+  </div>

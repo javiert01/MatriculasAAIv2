@@ -1,0 +1,29 @@
+<form [formGroup]="gradoForm" *ngIf="grado" (ngSubmit)="actualizarDatos()">
+<div class="form-row">
+  <div class="col-md-6">
+    <label for="nombreGrado">Nombre del Grado:</label>
+    <input type="text" class="form-control" id="nombreGrado" formControlName="nombreGrado">
+  </div>
+</div>
+<div class="form-row">
+  <div class="col-md-6">
+    <label for="costoPension">Costo Pensión:</label>
+    <input type="text" class="form-control" id="costoPension" formControlName="costoPension">
+  </div>
+</div>
+<div class="form-row">
+  <div class="col-md-6">
+    <label for="costoMatricula">Costo Matrícula:</label>
+    <input type="text" class="form-control" id="costoMatricula" formControlName="costoMatricula">
+  </div>
+</div>
+<div class="row"></div>
+<div class="row">
+  <div class="col-md-9"></div>
+  <div class="col-md-3">
+      <button class="btn btn-primary btn-lg" type="submit">Actualizar</button>
+      <button class="btn btn-danger btn-lg" type="button" (click)="onReturn()">Cancelar</button>
+  </div>
+</div>
+</form>
+

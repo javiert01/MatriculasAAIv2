@@ -1,0 +1,21 @@
+<form [formGroup]="categoriaForm" *ngIf="categoria" (ngSubmit)="actualizarDatos()">
+    <div class="form-row">
+      <div class="col-md-6">
+        <label for="tipoCategoria">Tipo de Categoria:</label>
+        <input type="text" class="form-control" id="tipoCategoria" formControlName="tipoCategoria">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col-md-6">
+        <label for="descuentoCategoria">Descuento de la Categoria (En porcentaje %):</label>
+        <input type="text" class="form-control" id="descuentoCategoria" formControlName="descuentoCategoria">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-9"></div>
+      <div class="col-md-3">
+          <button class="btn btn-primary btn-lg" type="submit">Actualizar</button>
+          <button class="btn btn-danger btn-lg" type="button" (click)="onReturn()">Cancelar</button>
+      </div>
+    </div>
+    </form>

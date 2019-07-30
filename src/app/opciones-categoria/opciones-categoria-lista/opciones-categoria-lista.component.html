@@ -1,0 +1,36 @@
+<div class="container-fluid">
+    <div class="row">
+      <h3>Seleccione una categoria de la lista para ver su información y editarlo</h3>
+    </div>
+    <div class="row">
+      <div class="col-md-2">
+      </div>
+      <div class="col-md-6" [hidden]="loading">
+          <p>Cargando categorias...</p>
+          <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      </div>
+    </div>
+    <div [hidden]="!loading">
+        <div class="row">
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-6 pre-scrollable">
+                <a
+                *ngFor="let categoria of categorias"
+                  style="cursor: pointer;"
+                  class="list-group-item clearfix"
+                  appSelected (click)="onGetIndex(categoria.id);">
+                <div class="pull-left">
+                  <p class="list-group-item-heading">{{ categoria.TIPO_CATE }}</p>
+                </div>
+                </a>
+              </div>
+          </div>
+          <hr>
+          <div class="row">
+            <div class="col-md-5"></div>
+            <div class="col-md-2"><button class="btn btn-danger" (click)="returnToAdmin()">Regresar a Opciones</button></div>
+            <div class="col-md-2"><button [routerLink]="['/opciones-categorias', index]" class="btn btn-primary">VER DETALLES</button></div>
+          </div>
+      </div>
+  </div>

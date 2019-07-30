@@ -6,24 +6,20 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 
-export class FamilyService {
-  url = `${HOST}/familia`;
+export class GradoService {
+  url = `${HOST}/grado`;
 
   constructor(private http: HttpClient) {}
 
-  getFamilyArray() {
-    return this.http.get<any>(this.url + '?sort=NOMB_FAMILIA&limit=1000');
+  getGrados() {
+    return this.http.get<any>(this.url);
   }
 
-  registrarNuevaFamilia(familia) {
-    return this.http.post<any>(this.url, familia);
-  }
-
-  getFamiliaID(id) {
+  getGradoID(id) {
     return this.http.get<any>(this.url + '/' + id);
   }
 
-  actualizarDatosFamilia(id, nuevosDatos) {
+  actualizarDatosGrado(id, nuevosDatos){
     return this.http.patch<any>(this.url + '/' + id, nuevosDatos);
   }
 }

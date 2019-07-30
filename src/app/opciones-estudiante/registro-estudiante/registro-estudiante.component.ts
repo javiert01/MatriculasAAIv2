@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { FamilyService } from 'src/app/family.service';
 import { Familia } from 'src/app/models/familia.model';
 import { Subject } from 'rxjs';
@@ -30,6 +30,10 @@ export class RegistroEstudianteComponent implements OnInit {
       },
       (error) => console.log(error)
     );
+    this.registroEstudianteForm = new FormGroup({
+      'nombres': new FormControl(null, Validators.required),
+      'apellidos': new FormControl(null, Validators.required),
+    });
   }
 
   enviarDatosEstudiante() {

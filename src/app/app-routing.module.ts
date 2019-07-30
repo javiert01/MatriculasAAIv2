@@ -19,6 +19,11 @@ import { OpcionesCategoriaComponent } from './opciones-categoria/opciones-catego
 import { OpcionesGradoComponent } from './opciones-grado/opciones-grado.component';
 import { RegistroEstudianteComponent } from './opciones-estudiante/registro-estudiante/registro-estudiante.component';
 import { EditarEstudianteComponent } from './opciones-estudiante/editar-estudiante/editar-estudiante.component';
+import { OpcionesGradoDetalleComponent } from './opciones-grado/opciones-grado-detalle/opciones-grado-detalle.component';
+import { OpcionesCategoriaDetalleComponent } from './opciones-categoria/opciones-categoria-detalle/opciones-categoria-detalle.component';
+import { RegistroFamiliaComponent } from './opciones-familia/registro-familia/registro-familia.component';
+import { EditarFamiliaComponent } from './opciones-familia/editar-familia/editar-familia.component';
+import { DetalleFamiliaComponent } from './opciones-familia/editar-familia/detalle-familia/detalle-familia.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/inicio-sesion', pathMatch: 'full'},
@@ -37,9 +42,18 @@ const appRoutes: Routes = [
         { path: 'registro-estudiante', component: RegistroEstudianteComponent},
         { path: 'editar-estudiante', component: EditarEstudianteComponent}
     ]},
-    { path: 'opciones-familias', component: OpcionesFamiliaComponent, canActivate: [AdminGuard]},
-    { path: 'opciones-categorias', component: OpcionesCategoriaComponent, canActivate: [AdminGuard]},
-    { path: 'opciones-grados', component: OpcionesGradoComponent, canActivate: [AdminGuard]}
+    { path: 'opciones-familias', component: OpcionesFamiliaComponent, canActivate: [AdminGuard], children: [
+      { path: 'registro-familia', component: RegistroFamiliaComponent},
+      { path: 'editar-familia', component: EditarFamiliaComponent, children: [
+        { path: ':id', component: DetalleFamiliaComponent}
+      ]}
+    ]},
+    { path: 'opciones-categorias', component: OpcionesCategoriaComponent, canActivate: [AdminGuard], children: [
+      { path: ':id', component: OpcionesCategoriaDetalleComponent}
+    ] },
+    { path: 'opciones-grados', component: OpcionesGradoComponent, canActivate: [AdminGuard], children: [
+      { path: ':id', component: OpcionesGradoDetalleComponent}
+    ] }
 ];
 
 @NgModule({

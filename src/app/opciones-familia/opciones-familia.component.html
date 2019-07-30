@@ -1,1 +1,26 @@
-<p>opciones-familia works!</p>
+<div class="row">
+    <div class="col-md-12">
+      <h1>Opciones de Familias</h1>
+    </div>
+</div>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2">
+        <div class="div-list">
+            <ul>
+              <li [routerLink]="['/opciones-familias/registro-familia']">
+                <h3>Registro de Nueva Familia</h3>
+                <p>Utilice esta opción para registrar en el sistema una nueva familia</p>
+              </li>
+              <li [routerLink]="['/opciones-familias/editar-familia']">
+                <h3>Editar Información de Familia</h3>
+                <p>Edite los datos de una familia, como el nombre, número de hijos y descuento</p>
+              </li>
+            </ul>
+          </div>
+    </div>
+    <div class="col-md-10">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

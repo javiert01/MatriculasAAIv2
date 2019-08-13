@@ -19,45 +19,47 @@
         </div>
         <div class="form-row">
           <div class="form-group col-md-6">
+            <label for="codigoEst">Código del estudiante *</label>
+            <input type="text" class="form-control" id="codigoEst" placeholder="Ingrese el código del Estudiante" formControlName="codigoEst">
+          </div>
+          <div class="form-group col-md-6">
+            <label for="ayudaFinanciera">Ayuda Financiera *</label>
+            <input type="number" class="form-control" id="ayudaFinanciera" placeholder="Ingrese la ayuda financiera del estudiante (en caso de no tener, colocar 0)" formControlName="ayudaFinanciera">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="saldoPendiente">Saldo a Favor o Pendiente *</label>
+            <input type="number" class="form-control" id="saldoPendiente" placeholder="Ingrese el saldo pendiente (positivo) o a favor (negativo) del estudiante (en caso de no tener, colocar 0)" formControlName="saldoPendiente">
+          </div>
+          <div class="form-group col-md-6">
+            <label for="creditosMision">Descuento Creditos Mision *</label>
+            <input type="number" class="form-control" id="creditosMision" placeholder="Ingrese el Descuento por Creditos de Mision del estudiante (en caso de no tener, colocar 0)" formControlName="creditosMision">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-6">
             <label for="categoria">Categoría*</label>
-            <select class="form-control">
-                <option>Normal</option>
-                <option>Misionero</option>
-                <option>Staff Tiempo Completo</option>
-                <option>Profesor Tiempo Completo</option>
+            <select class="form-control" formControlName="categoriaEstudiante">
+                <option *ngFor="let categoria of listaCategorias" [value]="categoria.id">{{categoria.TIPO_CATE}}</option>
               </select>
           </div>
           <div class="form-group col-md-6">
               <label for="grado">Grado*</label>
-              <select class="form-control">
-                  <option>PS3 - Nursery</option>
-                  <option>PS4 - Pre-school</option>
-                  <option>K - Primero de Básica</option>
-                  <option>1er Grado</option>
-                  <option>2do Grado</option>
-                  <option>3er Grado</option>
-                  <option>4to Grado</option>
-                  <option>5to Grado</option>
-                  <option>6to Grado</option>
-                  <option>7mo Grado</option>
-                  <option>8vo Grado</option>
-                  <option>9no Grado</option>
-                  <option>10mo Grado</option>
-                  <option>11vo Grado</option>
-                  <option>12vo Grado</option>
+              <select class="form-control" formControlName="gradoEstudiante">
+                  <option *ngFor="let grado of listaGrados" [value]="grado.id">{{grado.TIPO_GRADO}}</option>
               </select>
           </div>
         </div>
         <div class="form-row">
           <div class="col-md-12 form-group">
-              <p>Seleccione la familia del estudiante:</p>
+              <h4>Seleccione la familia del estudiante de la siguiente lista:</h4>
+              <h4><strong>ATENCIÓN: Si la familia no se encuentra en la lista, registre una nueva familia dando click en el botón de AGREGAR FAMILIA</strong></h4>
               <label for="search">Buscar Familia:</label>
               <input type="text" name="search" placeholder="Buscar..." (keyup)="getResultSearchArray()" #searchInput>
           </div>
         </div>
         <div class="row">
-            <div class="col-md-2">
-            </div>
             <div class="col-md-6 pre-scrollable">
                 <a
                 [id]="familia.id"
@@ -69,9 +71,50 @@
                 </div>
                 </a>
               </div>
+              <div class="col-md-6">
+                <button class="btn btn-primary btn-lg" *ngIf="!mostrarRegistroFamilia" (click)="mostrarRegistroFamilia = !mostrarRegistroFamilia">Agregar Familia +</button>
+                <form [formGroup]="registroFamiliaForm" *ngIf="mostrarRegistroFamilia">
+                  <div class="form-row">
+                    <div class="col-md-6">
+                      <label for="nombreFamilia">Nombre de la Familia:</label>
+                      <input type="text" class="form-control" id="nombreFamilia" formControlName="nombreFamilia">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="col-md-6">
+                      <label for="numHijos">Número de Hijos:</label>
+                      <input type="number" class="form-control" id="numHijos" formControlName="numHijos">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                      <div class="col-md-6">
+                        <label for="descuentoFamilia">Descuento (en dólares: 1500 si tiene 3 hijos o más, 500 si tiene 2 hijos, etc.):</label>
+                        <input type="number" class="form-control" id="descuentoFamilia" formControlName="descuentoFamilia">
+                      </div>
+                    </div>
+                  <div class="row">
+                    <div class="col-md-9"></div>
+                    <div class="col-md-3">
+                        <button class="btn btn-primary btn-lg" type="button" (click)="registrarFamilia()">Registrar y Seleccionar Familia</button>
+                        <button class="btn btn-danger btn-lg" type="button" (click)="mostrarRegistroFamilia = !mostrarRegistroFamilia">Cancelar</button>
+                    </div>
+                  </div>
+                  </form>
+              </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <button class="btn btn-primary" style="float: right;" type="button" (click)="seleccionarFamilia()">Seleccionar Familia</button>
+            </div>
+          </div>
+          <br><br>
+          <div class="row">
+            <h4 style="text-align: center"><strong>Familia Seleccionada:</strong> {{familiaSeleccionada?.NOMB_FAMILIA}}</h4>
           </div>
         <span *ngIf="!registroEstudianteForm?.valid" class="help-block">Recuerde llenar todos los campos para continuar</span><br>
         <button type="submit" class="btn btn-primary" [disabled]="!registroEstudianteForm?.valid">Aplicar</button>
       </form>
 </div>
+
+
 

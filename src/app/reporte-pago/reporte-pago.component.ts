@@ -309,9 +309,15 @@ export class ReportePagoComponent implements OnInit {
         pago = (student.ID_GRADO.COSTO_PENSION / this.planPago) + this.getSaldoAFavorStudent(student);
       }
     } else {
-      pago = pago + (student.ID_GRADO.COSTO_PENSION + student.ID_GRADO.COSTO_MATRICULA -
-        (student.ID_DESC_REPORTE.TOTAL_DESCUENTO * this.planPago) + parseFloat(student.SALDO_PENDIENTE.replace(',', '.')))
-        - student.ID_PAGO_REPORTE.TOTAL_PAGO;
+      if (student.ID_PAGO_REPORTE.FORMA_PAGO === 'Mensual') {
+        pago = (pago + (student.ID_GRADO.COSTO_PENSION + student.ID_GRADO.COSTO_MATRICULA -
+          (student.ID_DESC_REPORTE.TOTAL_DESCUENTO * this.planPago) + parseFloat(student.SALDO_PENDIENTE.replace(',', '.')))
+          - student.ID_PAGO_REPORTE.TOTAL_PAGO) / 9;
+      } else {
+        pago = pago + (student.ID_GRADO.COSTO_PENSION + student.ID_GRADO.COSTO_MATRICULA -
+          (student.ID_DESC_REPORTE.TOTAL_DESCUENTO * this.planPago) + parseFloat(student.SALDO_PENDIENTE.replace(',', '.')))
+          - student.ID_PAGO_REPORTE.TOTAL_PAGO;
+      }
     }
     return pago;
   }
@@ -327,9 +333,15 @@ export class ReportePagoComponent implements OnInit {
           pago = pago + (student.ID_GRADO.COSTO_PENSION / this.planPago) + this.getSaldoAFavorStudent(student);
         }
       } else {
-        pago =  pago + (student.ID_GRADO.COSTO_PENSION + student.ID_GRADO.COSTO_MATRICULA -
-          (student.ID_DESC_REPORTE.TOTAL_DESCUENTO * this.planPago) + parseFloat(student.SALDO_PENDIENTE.replace(',', '.')))
-          - student.ID_PAGO_REPORTE.TOTAL_PAGO;
+        if (student.ID_PAGO_REPORTE.FORMA_PAGO === 'Mensual') {
+          pago = (pago + (student.ID_GRADO.COSTO_PENSION + student.ID_GRADO.COSTO_MATRICULA -
+            (student.ID_DESC_REPORTE.TOTAL_DESCUENTO * this.planPago) + parseFloat(student.SALDO_PENDIENTE.replace(',', '.')))
+            - student.ID_PAGO_REPORTE.TOTAL_PAGO) / 9;
+        } else {
+          pago = pago + (student.ID_GRADO.COSTO_PENSION + student.ID_GRADO.COSTO_MATRICULA -
+            (student.ID_DESC_REPORTE.TOTAL_DESCUENTO * this.planPago) + parseFloat(student.SALDO_PENDIENTE.replace(',', '.')))
+            - student.ID_PAGO_REPORTE.TOTAL_PAGO;
+        }
       }
     }
     return pago;

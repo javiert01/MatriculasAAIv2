@@ -36,6 +36,43 @@ export class StudentService {
         return this.http.get(this.url + '?sort=NOMBRE_EST&limit=1000');
     }
 
+    registrarEstudiante(nuevoEstudiante) {
+      return this.http.post<any>(this.url, nuevoEstudiante);
+    }
+
+    crearReporteDescuento(id) {
+      const nuevoReporte = {
+        id: id,
+        DESC_NUM_HIJOS: 0,
+        DESC_CATE: 0,
+        DESC_AYUD_FIN: 0,
+        DESC_PREPAGO: 0,
+        DESC_CREDITOS_MISION: 0,
+        TOTAL_DESCUENTO: 0
+      };
+      return this.http.post<any>(this.url2 + '/reportedescuento', nuevoReporte);
+    }
+
+    crearReportePago(id) {
+      const nuevoReporte = {
+        id: id,
+        FORMA_PAGO: '',
+        METODO_PAGO: '',
+        TOTAL_PAGO: 0,
+        FECHA_PAGO: ''
+      };
+      return this.http.post<any>(this.url2 + '/reportepago', nuevoReporte);
+
+    }
+
+    actualizarIDReportes(id) {
+      const idReportes = {
+        ID_DESC_REPORTE: id,
+        ID_PAGO_REPORTE: id
+      };
+      return this.http.patch(this.url + '/' + id, idReportes);
+    }
+
     getStudent(index: number) {
         return this.http.get(this.url + '/' + index.toString());
     }

@@ -8,6 +8,7 @@ import { AuthService } from '../auth/auth.service';
 })
 export class HeaderComponent implements OnInit {
 
+  rol = localStorage.getItem('rol');
   constructor(public _authService: AuthService) { }
 
   ngOnInit() {

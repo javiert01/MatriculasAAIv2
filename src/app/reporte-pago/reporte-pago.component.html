@@ -1,14 +1,14 @@
   <div class="jumbotron">
       <h2 class="text-center">
           <em>Reporte de pagos</em>
-      </h2>      
+      </h2>
   </div>
   <div>
     <img src="assets/Images/header.jpg" alt="" style="width:20px; height: 10px;">
   </div>
  <div id="content" #content>
   <div class="container">
-      <h4>Informacion del estudiante:</h4>           
+      <h4>Informacion del estudiante:</h4>
       <table class="table table-bordered" id="tableInformacion">
         <thead>
           <tr>
@@ -63,7 +63,7 @@
                       </thead>
                       <tbody>
                         <tr>
-                          <td *ngFor="let student of students">{{student.ID_GRADO.COSTO_PENSION/planPago | currency}}</td>
+                          <td *ngFor="let student of students">{{(student.ID_GRADO.COSTO_PENSION / planPago) | currency}}</td>
                           <td>{{getTotalPension() | currency}}</td>
                           <td >-</td>
                         </tr>
@@ -106,7 +106,7 @@
                           <td><font color="red">{{-getTotalDescuentoPrepago() | currency}}</font></td>
                         </tr>
                         <tr *ngIf="existenCreditosEstudiante()">
-                            <td *ngFor="let student of students"><font color="red">-{{student.DESC_CREDITOS_MISION | currency}}</font></td>
+                            <td *ngFor="let student of students"><font color="red">-{{(student.DESC_CREDITOS_MISION / planPago) | currency}}</font></td>
                             <td><font color="red">-{{getTotalCreditosMision() | currency}}</font></td>
                         </tr>
                         <tr>
@@ -115,33 +115,33 @@
                         </tr>
                         <tr *ngIf="existeSaldoPendiente()">
                             <td *ngFor="let student of students">{{ getSaldoAnterior(student) | currency}}</td>
-                            <td>{{ getTotalSaldoAnterior() | currency}}</td> 
+                            <td>{{ getTotalSaldoAnterior() | currency}}</td>
                         </tr>
                         <tr>
                           <td *ngFor="let student of students">
                             <span *ngIf="saldoAFavorSuperaPensionEstudiante(student)">0</span>
                           <span *ngIf="!saldoAFavorSuperaPensionEstudiante(student)">{{ student.ID_PAGO_REPORTE.TOTAL_PAGO | currency}}</span>
                           </td>
-                          <td>{{ getTotal(false,true) | currency}}</td> 
+                          <td>{{ getTotal(false,true) | currency}}</td>
                       </tr>
                       <tr *ngIf="saldoAFavorSuperaPension()">
                         <td *ngFor="let student of students">
                           <span *ngIf="!saldoAFavorSuperaPensionEstudiante(student)">0</span>
                           <span *ngIf="saldoAFavorSuperaPensionEstudiante(student)">{{ getSaldoAFavorStudent(student) | currency}}</span>
                         </td>
-                        <td>{{ getTotalSaldoAFavor() | currency}}</td> 
+                        <td>{{ getTotalSaldoAFavor() | currency}}</td>
                     </tr>
                       <tr *ngIf="planPago !== 1">
                         <td *ngFor="let student of students">{{ get2ndoPago(student) | currency}}</td>
-                        <td>{{ getTotal2ndoPago() | currency}}</td> 
+                        <td>{{ getTotal2ndoPago() | currency}}</td>
                     </tr>
                       <tr>
                         <td *ngFor="let student of students">{{ student.ID_PAGO_REPORTE.FORMA_PAGO }}</td>
-                        <td>-</td> 
+                        <td>-</td>
                       </tr>
                       <tr>
                         <td *ngFor="let student of students">{{ student.ID_PAGO_REPORTE.METODO_PAGO }}</td>
-                        <td>-</td> 
+                        <td>-</td>
                       </tr>
                       </tbody>
                     </table>
@@ -152,7 +152,7 @@
                 <br>
                 <p>Por favor notar que:</p>
                 <p>La fecha de pagos es hasta el dia 5 del mes</p>
-                <p><strong>Año lectivo 2018-2019</strong></p>
+                <p><strong>Año lectivo 2019-2020</strong></p>
                 <tr></tr>
             </div>
           </div>
@@ -163,7 +163,7 @@
                 <p>Firma</p>
                 <p>Fecha: {{fecha | date:'yyyy-MM-dd HH:mm a'}}</p>
                 <p>Atendido por: {{user.NOMBRE}}</p>
-            </div>          
+            </div>
           </div>
           </div>
         </div>

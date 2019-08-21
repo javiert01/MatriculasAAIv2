@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FamilyService } from 'src/app/family.service';
 import { map, switchMap } from 'rxjs/operators';
@@ -6,19 +6,21 @@ import { EMPTY } from 'rxjs';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { DialogEditarFamiliaComponent } from 'src/app/dialog-editar-familia/dialog-editar-familia.component';
+import { StudentService } from 'src/app/student/student.service';
 
 @Component({
   selector: 'app-detalle-familia',
   templateUrl: './detalle-familia.component.html',
   styleUrls: ['./detalle-familia.component.css']
 })
-export class DetalleFamiliaComponent implements OnInit {
+export class DetalleFamiliaComponent implements OnInit, OnDestroy {
   familia;
   id;
   editarFamiliaForm: FormGroup;
+  students = [];
 
   constructor(private route: ActivatedRoute, private familyService: FamilyService
-    , private router: Router, private dialog: MatDialog) { }
+    , private router: Router, private dialog: MatDialog, private studentService: StudentService) { }
 
   ngOnInit() {
     this.route.params
@@ -32,6 +34,16 @@ export class DetalleFamiliaComponent implements OnInit {
         'numHijos': new FormControl(familia.NUM_HIJOS, Validators.required),
         'descuentoFamilia': new FormControl(familia.DESC_NUM_HIJOS, Validators.required)
       });
+      for (const estudiante of this.familia.estudiantes) {
+        this.studentService.getStudent(estudiante.id)
+        .subscribe(
+          (studentAux) => {
+            console.log(studentAux);
+            this.students.push(studentAux);
+          },
+          (error) => console.log(error)
+        );
+      }
     });
   }
 
@@ -68,5 +80,14 @@ export class DetalleFamiliaComponent implements OnInit {
     this.dialog.open(DialogEditarFamiliaComponent, dialogConfig);
 
   }
+
+  eliminarEst(id) {
+    
+  }
+
+  ngOnDestroy() {
+    this.students.splice(0, this.students.length);
+  }
+
 
 }

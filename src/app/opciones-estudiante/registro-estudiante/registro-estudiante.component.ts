@@ -6,6 +6,9 @@ import { Subject } from 'rxjs';
 import { GradoService } from 'src/app/grado.service';
 import { CategoriaService } from 'src/app/categoria.service';
 import { StudentService } from 'src/app/student/student.service';
+import { DialogRegistroEstudianteComponent } from 'src/app/dialog-registro-estudiante/dialog-registro-estudiante.component';
+import { MatDialogConfig, MatDialog } from '@angular/material';
+import { DialogRegistroFamiliaComponent } from 'src/app/dialog-registro-familia/dialog-registro-familia.component';
 
 @Component({
   selector: 'app-registro-estudiante',
@@ -28,7 +31,8 @@ export class RegistroEstudianteComponent implements OnInit {
   @ViewChild('searchInput', {static: false}) searchInput: ElementRef;
 
   constructor(private familyService: FamilyService, private gradoService: GradoService,
-    private categoriaService: CategoriaService, private studentService: StudentService) { }
+    private categoriaService: CategoriaService, private studentService: StudentService,
+    private dialog: MatDialog) { }
 
   ngOnInit() {
     this.familyService.getFamilyArray()
@@ -98,8 +102,12 @@ export class RegistroEstudianteComponent implements OnInit {
         .subscribe(
           (data3) => console.log('reportes', data3)
         );
+        this.openDialog('1');
       },
-      (err) => console.log(err)
+      (err) => {
+        console.log(err);
+        this.openDialog('2');
+      }
     );
   }
 
@@ -156,6 +164,18 @@ export class RegistroEstudianteComponent implements OnInit {
         this.familiaSeleccionada = this.listaFamiliaCopy[i];
       }
     }
+  }
+
+  openDialog(respuesta) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.height = '300px';
+    dialogConfig.width = '400px';
+    dialogConfig.data = {
+      mensaje: respuesta
+    };
+    this.dialog.open(DialogRegistroEstudianteComponent, dialogConfig);
   }
 
 

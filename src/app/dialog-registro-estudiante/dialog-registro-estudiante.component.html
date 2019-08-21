@@ -1,0 +1,19 @@
+<div *ngIf="mensaje === '1'">
+  <h2 mat-dialog-title>Estudiante registrado con éxito!</h2>
+  <mat-dialog-content>
+      <p>Se ha registrado un nuevo estudiante con éxito.</p>
+      <P>Haga click en aceptar para continuar</P>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+      <button class="mat-raised-button"(click)="close()">Aceptar</button>
+  </mat-dialog-actions>
+</div>
+<div *ngIf="mensaje === '2'">
+  <h2 mat-dialog-title>ATENCIÓN!</h2>
+  <mat-dialog-content>
+      <p>Hubo un error al ingresar el nuevo estudiante, por favor inténtelo más tarde.</p>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+      <button class="mat-raised-button"(click)="close()">Regresar</button>
+  </mat-dialog-actions>
+</div>

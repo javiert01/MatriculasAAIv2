@@ -1,0 +1,87 @@
+<div class="container-fluid">
+  <form [formGroup]="editarEstudianteForm" (ngSubmit)="enviarDatosEstudiante()" *ngIf="estudiante">
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="nombre">Nombres *</label>
+          <input type="text" class="form-control" id="nombres" placeholder="Ingrese los nombres" formControlName="nombres">
+        </div>
+        <div class="form-group col-md-6">
+          <label for="grado">Estado*</label>
+          <select class="form-control" formControlName="estado">
+              <option value="PENDIENTE">PENDIENTE</option>
+              <option value="MATRICULADO">MATRICULADO</option>
+          </select>
+      </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="codigoEst">Código del estudiante *</label>
+          <input type="text" class="form-control" id="codigoEst" placeholder="Ingrese el código del Estudiante" formControlName="codigoEst">
+        </div>
+        <div class="form-group col-md-6">
+          <label for="ayudaFinanciera">Ayuda Financiera *</label>
+          <input type="number" class="form-control" id="ayudaFinanciera" placeholder="Ingrese la ayuda financiera del estudiante (en caso de no tener, colocar 0)" formControlName="ayudaFinanciera">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="saldoPendiente">Saldo a Favor o Pendiente *</label>
+          <input type="number" class="form-control" id="saldoPendiente" placeholder="Ingrese el saldo pendiente (positivo) o a favor (negativo) del estudiante (en caso de no tener, colocar 0)" formControlName="saldoPendiente">
+        </div>
+        <div class="form-group col-md-6">
+          <label for="creditosMision">Descuento Creditos Mision *</label>
+          <input type="number" class="form-control" id="creditosMision" placeholder="Ingrese el Descuento por Creditos de Mision del estudiante (en caso de no tener, colocar 0)" formControlName="creditosMision">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="categoria">Categoría*</label>
+          <select class="form-control" formControlName="categoriaEstudiante">
+              <option *ngFor="let categoria of listaCategorias" [value]="categoria.id">{{categoria.TIPO_CATE}}</option>
+            </select>
+        </div>
+        <div class="form-group col-md-6">
+            <label for="grado">Grado*</label>
+            <select class="form-control" formControlName="gradoEstudiante">
+                <option *ngFor="let grado of listaGrados" [value]="grado.id">{{grado.TIPO_GRADO}}</option>
+            </select>
+        </div>
+        </div>
+        <form [formGroup]="editarFamiliaForm" *ngIf="familia">
+          <div class="form-row">
+            <div class="col-md-12">
+                <h3>Familia Actual: (Puede editar los datos)</h3>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="col-md-6">
+                <div class="form-row">
+                    <div class="col-md-12">
+                      <label for="nombreFamilia">Nombre de la Familia:</label>
+                      <input type="text" class="form-control" id="nombreFamilia" formControlName="nombreFamilia">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="col-md-12">
+                      <label for="numHijos">Número de Hijos:</label>
+                      <input type="number" class="form-control" id="numHijos" formControlName="numHijos">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                      <div class="col-md-12">
+                        <label for="descuentoFamilia">Descuento (en dólares: 1500 si tiene 3 hijos o más, 500 si tiene 2 hijos, etc.):</label>
+                        <input type="number" class="form-control" id="descuentoFamilia" formControlName="descuentoFamilia">
+                      </div>
+                    </div>
+            </div>
+          </div>
+          </form>
+          <div class="form-row">
+            <div class="col-md-12">
+                <span *ngIf="!registroEstudianteForm?.valid" class="help-block">Recuerde llenar todos los campos para continuar</span><br>
+                <button type="submit" class="btn btn-primary btn-block" >Actualizar Información</button>
+            </div>
+          </div>
+    </form>
+</div>
+

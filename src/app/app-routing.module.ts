@@ -24,6 +24,8 @@ import { OpcionesCategoriaDetalleComponent } from './opciones-categoria/opciones
 import { RegistroFamiliaComponent } from './opciones-familia/registro-familia/registro-familia.component';
 import { EditarFamiliaComponent } from './opciones-familia/editar-familia/editar-familia.component';
 import { DetalleFamiliaComponent } from './opciones-familia/editar-familia/detalle-familia/detalle-familia.component';
+import { EditarEstudianteDetalleComponent } from './opciones-estudiante/editar-estudiante/editar-estudiante-detalle/editar-estudiante-detalle.component';
+import { CambioFamiliaEstudianteComponent } from './opciones-estudiante/cambio-familia-estudiante/cambio-familia-estudiante.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/inicio-sesion', pathMatch: 'full'},
@@ -40,7 +42,10 @@ const appRoutes: Routes = [
     { path: 'register', component: RegisterComponent, canActivate: [AdminGuard]},
     { path: 'opciones-estudiantes', component: OpcionesEstudianteComponent, canActivate: [AdminGuard], children: [
         { path: 'registro-estudiante', component: RegistroEstudianteComponent},
-        { path: 'editar-estudiante', component: EditarEstudianteComponent}
+        { path: 'editar-estudiante', component: EditarEstudianteComponent, children: [
+          {path: ':id', component: EditarEstudianteDetalleComponent }
+        ]},
+        { path: 'cambio-familia-estudiante', component: CambioFamiliaEstudianteComponent},
     ]},
     { path: 'opciones-familias', component: OpcionesFamiliaComponent, canActivate: [AdminGuard], children: [
       { path: 'registro-familia', component: RegistroFamiliaComponent},

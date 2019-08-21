@@ -1,0 +1,77 @@
+<div class="row">
+  <h2><strong>Cambio de Familia</strong></h2>
+  <h4>Seleccione el estudiante que desea cambiar y la familia a la que desea que vaya</h4>
+</div>
+<div class="row">
+  <div class="col-md-6">
+    <form>
+      <label for="search">Buscar Estudiante:</label>
+      <input type="text" name="search" placeholder="Buscar..." (keyup)="getResultSearchArray()" #searchInput>
+    </form>
+  </div>
+  <div class="col-md-6">
+      <form>
+          <label for="search">Buscar Familia:</label>
+          <input type="text" name="search" placeholder="Buscar..." (keyup)="getResultSearchArrayFamilia()" #searchInputFamilia>
+        </form>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6" [hidden]="loading">
+      <p>Cargando estudiantes ...</p>
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  </div>
+  <div class="col-md-6" [hidden]="loadingFamilia">
+      <p>Cargando familias ...</p>
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  </div>
+</div>
+<div [hidden]="!loading">
+    <div class="row">
+        <div class="col-md-6 pre-scrollable">
+            <a
+            *ngFor="let student of students"
+              style="cursor: pointer;"
+              class="list-group-item clearfix"
+              appSelected (click)="onGetIndex(student.id)">
+            <div class="pull-left">
+              <p class="list-group-item-heading">{{ student.NOMBRE_EST }}</p>
+            </div>
+            </a>
+          </div>
+          <div class="col-md-6 pre-scrollable">
+              <a
+              [id]="familia.id"
+              *ngFor="let familia of listaFamilias"
+                style="cursor: pointer;"
+                class="list-group-item clearfix"
+                (click)="onGetIndexFamilia(familia.id); changeClassID(familia.id)">
+              <div class="pull-left">
+                <p class="list-group-item-heading">{{ familia.NOMB_FAMILIA}}</p>
+              </div>
+              </a>
+          </div>
+      </div>
+      <hr>
+      <div class="row">
+        <div class="col-md-6"><button class="btn btn-primary" (click)="verInfoEstudiante()">Seleccionar Estudiante</button></div>
+        <div class="col-md-6"><button class="btn btn-primary" (click)="verInfoFamilia()">Seleccionar Familia</button></div>
+      </div>
+      <div class="row">
+        <div class="col-md-5" *ngIf="verDetallesEst">
+          <h4>Estudiante Seleccionado: {{estudianteSeleccionado?.NOMBRE_EST}}</h4>
+        </div>
+        <div class="col-md-1">
+          <h1><strong>==></strong></h1>
+        </div>
+        <div class="col-md-6" *ngIf="verDetallesFam">
+          <h4>Familia Seleccionada: {{familiaSeleccionada?.NOMB_FAMILIA}}</h4>
+        </div>
+      </div>
+      <div class="row">
+        <button class="btn btn-primary btn-block" (click)="cambiarFamilia()">CAMBIAR ESTUDIANTE</button>
+      </div>
+</div>
+
+
+

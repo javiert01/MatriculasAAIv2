@@ -325,7 +325,8 @@ export class ReportePagoComponent implements OnInit {
   getTotal2ndoPago() {
     let pago = 0;
     for (const student of this.students) {
-      if (this.saldoAFavorSuperaPensionEstudiante(student)) {
+      pago = pago + this.get2ndoPago(student);
+      /*if (this.saldoAFavorSuperaPensionEstudiante(student)) {
         if (student.ID_PAGO_REPORTE.METODO_PAGO === 'Cheque o efectivo') {
           pago = pago + (student.ID_GRADO.COSTO_PENSION / this.planPago) + this.getSaldoAFavorStudent(student)
           - ((student.ID_GRADO.COSTO_PENSION / this.planPago) * 0.03);
@@ -342,7 +343,7 @@ export class ReportePagoComponent implements OnInit {
             (student.ID_DESC_REPORTE.TOTAL_DESCUENTO * this.planPago) + parseFloat(student.SALDO_PENDIENTE.replace(',', '.')))
             - student.ID_PAGO_REPORTE.TOTAL_PAGO;
         }
-      }
+      }*/
     }
     return pago;
   }

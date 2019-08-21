@@ -73,8 +73,12 @@ export class StudentService {
       return this.http.patch(this.url + '/' + id, idReportes);
     }
 
+    actualizarDatosEstudiante(id, nuevosDatos) {
+      return this.http.patch<any>(this.url + '/' + id, nuevosDatos);
+    }
+
     getStudent(index: number) {
-        return this.http.get(this.url + '/' + index.toString());
+        return this.http.get<any>(this.url + '/' + index.toString());
     }
 
     getStudentDesc(): Observable<any> {

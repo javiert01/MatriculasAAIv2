@@ -51,6 +51,12 @@ import { DialogRegistroFamiliaComponent } from './dialog-registro-familia/dialog
 import { ListaFamiliasComponent } from './opciones-familia/editar-familia/lista-familias/lista-familias.component';
 import { DetalleFamiliaComponent } from './opciones-familia/editar-familia/detalle-familia/detalle-familia.component';
 import { DialogEditarFamiliaComponent } from './dialog-editar-familia/dialog-editar-familia.component';
+import { DialogRegistroEstudianteComponent } from './dialog-registro-estudiante/dialog-registro-estudiante.component';
+import { EditarListaEstudiantesComponent } from './opciones-estudiante/editar-estudiante/editar-lista-estudiantes/editar-lista-estudiantes.component';
+import { EditarEstudianteDetalleComponent } from './opciones-estudiante/editar-estudiante/editar-estudiante-detalle/editar-estudiante-detalle.component';
+import { DialogEditarEstudianteComponent } from './dialog-editar-estudiante/dialog-editar-estudiante.component';
+import { CambioFamiliaEstudianteComponent } from './opciones-estudiante/cambio-familia-estudiante/cambio-familia-estudiante.component';
+import { DialogCambioFamiliaComponent } from './dialog-cambio-familia/dialog-cambio-familia.component';
 
 @NgModule({
   declarations: [
@@ -86,7 +92,13 @@ import { DialogEditarFamiliaComponent } from './dialog-editar-familia/dialog-edi
     DialogRegistroFamiliaComponent,
     ListaFamiliasComponent,
     DetalleFamiliaComponent,
-    DialogEditarFamiliaComponent
+    DialogEditarFamiliaComponent,
+    DialogRegistroEstudianteComponent,
+    EditarListaEstudiantesComponent,
+    EditarEstudianteDetalleComponent,
+    DialogEditarEstudianteComponent,
+    CambioFamiliaEstudianteComponent,
+    DialogCambioFamiliaComponent
   ],
   imports: [
     BrowserModule,
@@ -108,6 +120,8 @@ import { DialogEditarFamiliaComponent } from './dialog-editar-familia/dialog-edi
   }],
   bootstrap: [AppComponent],
   entryComponents: [LoginDialogComponent, DialogOpcionPagoComponent, DialogSaldoPendienteComponent, DialogEditarGradoComponent,
-  DialogEditarCategoriaComponent, DialogRegistroFamiliaComponent, DialogEditarFamiliaComponent]
+  DialogEditarCategoriaComponent, DialogRegistroFamiliaComponent, DialogEditarFamiliaComponent, DialogRegistroEstudianteComponent,
+  DialogEditarEstudianteComponent, DialogCambioFamiliaComponent]
 })
+
 export class AppModule { }

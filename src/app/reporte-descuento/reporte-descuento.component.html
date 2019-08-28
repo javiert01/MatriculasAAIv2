@@ -6,23 +6,21 @@
     </div>
   </div>
 </div>
+<h2>Seleccione una opción aquí:</h2>
 <div class="dropdown">
   <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Filtrar por:
   <span class="caret"></span></button>
   <ul class="dropdown-menu">
+    <li><a style="cursor: pointer;" (click)="onGetStudentEstado()">Estado (Matriculado o Pendiente)</a></li>
+    <li><a style="cursor: pointer;" (click)="onGetStudentCategoria()">Categorías (Normal, Misionero, Staff, Profesores)</a></li>
     <li class="dropdown-header">Descuentos:</li>
-    <li><a style="cursor: pointer;" (click)=onGetStudentDesc()>Descuento</a></li>
+    <li><a style="cursor: pointer;" (click)=onGetStudentDesc()>Descuento (si tiene descuento o no)</a></li>
     <li><a style="cursor: pointer;" (click)=onGetStudentAyud()>Ayuda Financiera</a></li>
-    <li class="dropdown-header">Método de pago:</li>
-    <li><a style="cursor: pointer;" (click)="onGetStudentMetodoPago('Tarjeta de Credito')">Tarjeta de Crédito</a></li>
-    <li><a style="cursor: pointer;" (click)="onGetStudentMetodoPago('Cheque o efectivo')">Cheque o Efectivo</a></li>
-    <li><a style="cursor: pointer;" (click)="onGetStudentMetodoPago('Otros')">Otros</a></li>
-    <li class="dropdown-header">Forma de pago:</li>
-    <li><a style="cursor: pointer;" (click)="onGetStudentFormaPago('Anual')">Anual</a></li>
-    <li><a style="cursor: pointer;" (click)="onGetStudentFormaPago('Semestral')">Semestral</a></li>
-    <li><a style="cursor: pointer;" (click)="onGetStudentFormaPago('Mensual')">Mensual</a></li>
-    <li class="dropdown-header">Fecha:</li>
-    <li><a style="cursor: pointer;">
+    <li class="dropdown-header">Pagos:</li>
+    <li> <a style="cursor: pointer" (click)="onGetStudentMetodoPago()">Método de pago (Tarjeta de credito, cheque, etc.)</a></li>
+    <li><a style="cursor: pointer;" (click)="onGetStudentFormaPago()">Forma de pago (Anual, Semestral o Mensual)</a></li>
+
+    <!--<li><a style="cursor: pointer;">
       <form [formGroup]="fechaForm" (ngSubmit)="onSubmitFecha()">
       <div class="form-group">
           <label for="fechaReporte">Seleccione una fecha:</label>
@@ -31,17 +29,17 @@
           <button class="btn btn-primary" type="submit">Buscar</button>
       </div>
     </form>
-    </a></li>
+    </a></li>-->
   </ul>
 </div>
 <div class="row">
   <div class="col-md-2"></div>
   <div class="col-md-6">
-    <h4>{{mensaje}}:</h4>
+    <h2><strong>{{mensaje}}:</strong></h2>
   </div>
 </div>
 <br>
-<div class="row">
+<!--<div class="row">
   <div class="col-md-2">
   </div>
   <div class="col-md-6" [hidden]="loading">
@@ -58,22 +56,19 @@
           *ngFor="let student of students"
             style="cursor: pointer;"
             class="list-group-item clearfix"
-            appSelected (click)="onGetIndex(student.id); onGetFamilyIndex(student.ID_FAMILIA.id)">
+            appSelected >
           <div class="pull-left">
             <p class="list-group-item-heading">{{ student?.NOMBRE_EST }}</p>
           </div>
           </a>
         </div>
     </div>
+    -->
     <hr>
-    <div class="row">
+    <div [hidden]="!chart">
+        <canvas id="canvas"> {{chart}} </canvas>
+      </div>
+    <!--<div class="row">
       <div class="col-md-7"></div>
-      <div class="col-md-2"><button [routerLink]="['/reporte-descuento', index]" class="btn btn-primary">Aceptar</button></div>
-    </div>
-</div>
-<div class="row">
-  <div class="col-md-2"></div>
-  <div class="col-md-8">
-    <router-outlet></router-outlet>
-  </div>
-</div>
+      <div class="col-md-2"><button [routerLink]="['/reporte-descuento', index]" class="btn btn-primary">Aceptar</button></div>-->
+

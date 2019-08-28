@@ -1,0 +1,109 @@
+<div class="row">
+  <div class="col-md-2">
+  </div>
+  <div class="col-md-6">
+    <h3>Familia:{{ familia?.NOMB_FAMILIA }}</h3>
+  </div>
+</div>
+<div class="estudiante" *ngFor="let student of students; let i=index" [ngSwitch]="student?.ID_CATE.id">
+    <div class="row">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-10">
+          <h3>Información del Estudiante N°: {{ i+1 }}</h3>
+          <div class="row">
+            <div class="col-md-10">
+              <ul class="list-group">
+                <li class="list-group-item">
+                  <p>Nombre: {{student?.NOMBRE_EST}}</p>
+                </li>
+                <li class="list-group-item">
+                  <p>Código: {{student?.CODIGO_EST}}</p>
+                </li>
+                <li class="list-group-item">
+                  <p>Grado Actual: {{student?.ID_GRADO.id | tipoGrado}}</p>
+                </li>
+                <li class="list-group-item">
+                  <p>Categoria: {{student?.ID_CATE.TIPO_CATE}}</p>
+                  </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+  <div class="row">
+      <div class="col-md-2">
+        </div>
+        <div class="col-md-10">
+          <h3>Información del Pago:</h3>
+          <div class="row">
+            <div class="col-md-5">
+              <ul class="list-group">
+                <li class="list-group-item">
+                  <p>Valor Matrícula: {{student?.ID_GRADO.COSTO_MATRICULA | currency}}</p>
+                </li>
+                <li class="list-group-item">
+                  <p>Valor Pensión (Anual): {{student?.ID_GRADO.COSTO_PENSION | currency}}</p>
+                </li>
+                <li class="list-group-item">
+                  <p *ngIf="student?.SALDO_PENDIENTE.includes('-')">Saldo a favor: {{ student?.SALDO_PENDIENTE }}</p>
+                  <p *ngIf="!student?.SALDO_PENDIENTE.includes('-')">Saldo pendiente: {{ student?.SALDO_PENDIENTE }}</p>
+                </li>
+                <li class="list-group-item">
+                  <p>-</p>
+                </li>
+                <li class="list-group-item">
+                  <p>Total a pagar: {{ getTotalPagoEstudiante(student, 1,true) | currency}}</p>
+                </li>
+              </ul>
+            </div>
+            <div class="col-md-5">
+              <ul class="list-group">
+                <li class="list-group-item">
+                  <p *ngIf="(student.ID_CATE.id === 2) || (student.ID_CATE.id === 3); else empty">Descuento Matrícula: {{ (student.ID_GRADO.COSTO_MATRICULA - 300) | currency}}</p>
+                  <ng-template #empty><p>-</p></ng-template>
+                </li>
+                <li class="list-group-item" #discountPension>
+                  <!--<div *ngIf="!(student.ID_CATE.id === 1 && student.ID_FAMILIA.NUM_HIJOS === 1);else empty"> !-->
+                      <p *ngSwitchCase="'1'">
+                        <span *ngIf="existeAyudaFinancieraFamilia()">
+                          <span *ngIf="student.DESC_AYUD_FIN !== '0'">Ayuda Financiera: {{ student.DESC_AYUD_FIN | currency}}</span>
+                          <span *ngIf="student.DESC_AYUD_FIN === '0'">-</span>
+                        </span>
+                        <span *ngIf="!existeAyudaFinancieraFamilia()">
+                          <span>Descuento 2ndo Hijo: {{ (student.ID_FAMILIA.DESC_NUM_HIJOS)/(student.ID_FAMILIA.NUM_HIJOS) | currency}}</span>
+                        </span>
+                      </p>
+                      <p *ngSwitchCase="'2'">
+                        <span *ngIf="student.ID_GRADO.id > 1">Descuento Profesor tiempo completo: {{ (student.ID_GRADO.COSTO_PENSION) * (student.ID_CATE.DESC_CATE/100) | currency}}</span>
+                        <span *ngIf="student.ID_GRADO.id === 1">Descuento Profesor tiempo completo: {{ 2850 | currency}}</span>
+                      </p>
+                      <p *ngSwitchCase="'3'">
+                        <span *ngIf="student.ID_GRADO.id > 1">Descuento Staff tiempo completo: {{ (student.ID_GRADO.COSTO_PENSION) * (student.ID_CATE.DESC_CATE/100) | currency}}</span>
+                        <span *ngIf="student.ID_GRADO.id === 1">Descuento Profesor tiempo completo: {{ 2850 | currency}}</span>
+                      </p>
+                      <p *ngSwitchCase="'4'">Descuento misionero: {{ (student.ID_GRADO.COSTO_PENSION) * (student.ID_CATE.DESC_CATE/100) | currency}}</p>
+                      <p *ngSwitchDefault>0</p>
+                  <!--</div>!-->
+                </li>
+                <li class="list-group-item">
+                  <p *ngIf="student.ID_CATE.id !== 4 || (student.ID_CATE.id === 4 && student.DESC_AYUD_FIN === '0')">-</p>
+                  <p *ngIf="student.ID_CATE.id === 4 && student.DESC_AYUD_FIN !== '0'">Ayuda Financiera: ${{ student.DESC_AYUD_FIN }}</p>
+                </li>
+                <li class="list-group-item">
+                  <p *ngIf="student.DESC_CREDITOS_MISION === 0">-</p>
+                  <p *ngIf="student.DESC_CREDITOS_MISION !== 0">Creditos Misión: {{student.DESC_CREDITOS_MISION | currency}}</p>
+                </li>
+              </ul>
+             </div>
+          </div>
+        </div>
+      </div>
+  </div>
+  <div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-6">
+      <h3>Pago total por familia:  {{getTotalPagoFamilia() | currency}}</h3>
+      <hr>
+    </div>
+  </div>

@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { SignInComponent } from './auth/sign-in/sign-in.component';
-import { StudentComponent } from './student/student.component';
-import { StudentDetailComponent } from './student/student-detail/student-detail.component';
 import { OpcionPagoComponent } from './opcion-pago/opcion-pago.component';
 import { ReportePagoComponent } from './reporte-pago/reporte-pago.component';
 import { StudentResolve } from './resolvers/student.resolve';
@@ -24,8 +22,14 @@ import { OpcionesCategoriaDetalleComponent } from './opciones-categoria/opciones
 import { RegistroFamiliaComponent } from './opciones-familia/registro-familia/registro-familia.component';
 import { EditarFamiliaComponent } from './opciones-familia/editar-familia/editar-familia.component';
 import { DetalleFamiliaComponent } from './opciones-familia/editar-familia/detalle-familia/detalle-familia.component';
+// tslint:disable-next-line: max-line-length
 import { EditarEstudianteDetalleComponent } from './opciones-estudiante/editar-estudiante/editar-estudiante-detalle/editar-estudiante-detalle.component';
 import { CambioFamiliaEstudianteComponent } from './opciones-estudiante/cambio-familia-estudiante/cambio-familia-estudiante.component';
+import { EliminarEstudianteComponent } from './opciones-estudiante/eliminar-estudiante/eliminar-estudiante.component';
+// tslint:disable-next-line: max-line-length
+import { EliminarDetalleEstudianteComponent } from './opciones-estudiante/eliminar-estudiante/eliminar-detalle-estudiante/eliminar-detalle-estudiante.component';
+import { EstudiantesEstadoComponent } from './estudiantes-estado/estudiantes-estado.component';
+import { DetalleEstudiantesEstadoComponent } from './estudiantes-estado/detalle-estudiantes-estado/detalle-estudiantes-estado.component';
 
 const appRoutes: Routes = [
     { path: '', redirectTo: '/inicio-sesion', pathMatch: 'full'},
@@ -35,15 +39,21 @@ const appRoutes: Routes = [
         student: StudentResolve
       }
     },
-    { path: 'reporte-descuento', component: ReporteDescuentoComponent, canActivate: [AdminGuard],  children: [
+    { path: 'reportes-admin', component: ReporteDescuentoComponent, canActivate: [AdminGuard],  children: [
         { path: ':id', component: ReporteDescuentoDetailComponent}
     ] },
     { path: 'admin-page', component: AdminPageComponent, canActivate: [AdminGuard]},
     { path: 'register', component: RegisterComponent, canActivate: [AdminGuard]},
+    { path: 'lista-estudiantes-estado', component: EstudiantesEstadoComponent, canActivate: [AdminGuard],children: [
+      {path: ':id', component: DetalleEstudiantesEstadoComponent}
+    ]},
     { path: 'opciones-estudiantes', component: OpcionesEstudianteComponent, canActivate: [AdminGuard], children: [
         { path: 'registro-estudiante', component: RegistroEstudianteComponent},
         { path: 'editar-estudiante', component: EditarEstudianteComponent, children: [
           {path: ':id', component: EditarEstudianteDetalleComponent }
+        ]},
+        { path: 'eliminar-estudiante', component: EliminarEstudianteComponent, children: [
+          {path: ':id', component: EliminarDetalleEstudianteComponent }
         ]},
         { path: 'cambio-familia-estudiante', component: CambioFamiliaEstudianteComponent},
     ]},

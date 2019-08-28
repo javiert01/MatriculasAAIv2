@@ -1,0 +1,59 @@
+<div class="row">
+  <div class="col-md-2">
+    <div class="dropdown">
+      <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Filtrar por:
+      <span class="caret"></span></button>
+      <ul class="dropdown-menu">
+        <li class="dropdown-header">ESTADO:</li>
+        <li><a style="cursor: pointer;" (click)="onGetStudentEstado('PENDIENTE')">PENDIENTES</a></li>
+        <li><a style="cursor: pointer;" (click)="onGetStudentEstado('MATRICULADO')">MATRICULADOS</a></li>
+        <li><a style="cursor: pointer;" (click)="onGetStudentEstado('TODOS')">TODOS</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="col-md-9">
+    <h2><strong>{{mensaje}}</strong></h2>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-2">
+  </div>
+  <div class="col-md-7">
+    <form>
+      <label for="search">Buscar Estudiante:</label>
+      <input type="text" name="search" placeholder="Buscar..." (keyup)="getResultSearchArray()" #searchInput>
+    </form>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-2">
+  </div>
+  <div class="col-md-6" [hidden]="loading">
+      <p>Cargando estudiantes ...</p>
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  </div>
+</div>
+<div [hidden]="!loading">
+    <div class="row">
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-6 pre-scrollable">
+            <a
+            *ngFor="let student of students"
+              style="cursor: pointer;"
+              class="list-group-item clearfix"
+              appSelected (click)="onGetIndex(student.id); onGetFamilyIndex(student.ID_FAMILIA.id); showAlerta(student.ALERTA)">
+            <div class="pull-left">
+              <p class="list-group-item-heading">{{ student.NOMBRE_EST }}</p>
+            </div>
+            </a>
+          </div>
+      </div>
+      <hr>
+      <div class="row">
+        <div class="col-md-7"></div>
+        <div class="col-md-2"><button [routerLink]="['/lista-estudiantes-estado', index]" [queryParams]="{familia: familyIndex}" class="btn btn-primary">Aceptar</button></div>
+      </div>
+</div>
+

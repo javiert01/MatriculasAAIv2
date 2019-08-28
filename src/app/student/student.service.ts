@@ -81,6 +81,10 @@ export class StudentService {
         return this.http.get<any>(this.url + '/' + index.toString());
     }
 
+    deleteStudent(id) {
+      return this.http.delete<any>(this.url + '/' + id);
+    }
+
     getStudentDesc(): Observable<any> {
         return this.http.get(this.url + '/descuento');
     }
@@ -138,15 +142,42 @@ export class StudentService {
         return this.http.get(this.url2 + '/grado');
     }
 
-    getResultSearchArray(searchInput: string) {
+    getResultSearchArray(searchInput: string, estado) {
         this.students.splice(0, this.students.length);
-        for (const student of this.studentsCopy) {
-          if (student.NOMBRE_EST.toLowerCase().includes(searchInput.toLowerCase())) {
-            this.students.push(student);
+        if(estado === 'TODOS'){
+          for (const student of this.studentsCopy) {
+            if (student.NOMBRE_EST.toLowerCase().includes(searchInput.toLowerCase())) {
+              this.students.push(student);
+            }
+          }
+        } else {
+          for (const student of this.studentsCopy) {
+            if (student.NOMBRE_EST.toLowerCase().includes(searchInput.toLowerCase()) && student.ESTADO === estado) {
+              this.students.push(student);
+            }
           }
         }
+
         this.studentsChanged.next(this.students.slice());
+    }
+
+    getStudentsEstado(estado) {
+      if (estado === 'TODOS') {
+        this.students.splice(0, this.students.length);
+        for (let i = 0; i < this.studentsCopy.length; i++) {
+            this.students.push(this.studentsCopy[i]);
+          }
+      } else {
+        this.students.splice(0, this.students.length);
+        for (let i = 0; i < this.studentsCopy.length; i++) {
+        if (this.studentsCopy[i].ESTADO === estado) {
+          this.students.push(this.studentsCopy[i]);
+        }
+        }
       }
+      this.studentsChanged.next(this.students.slice());
+
+    }
 
       initStudentAux() {
           this.studentsAux = [];

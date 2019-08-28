@@ -19,7 +19,9 @@ export class AdminPageComponent implements OnInit {
     {titulo: 'Categorías', descripcion: 'Edite la información de las categorias',
     imagen: '/assets/iconos/icono-categoria.png', ruta: '/opciones-categorias'},
     {titulo: 'Grados', descripcion: 'Edite la información de los grados de la AAI',
-    imagen: '/assets/iconos/icono-grado.png', ruta: '/opciones-grados'}
+    imagen: '/assets/iconos/icono-grado.png', ruta: '/opciones-grados'},
+    {titulo: 'Reportes', descripcion: 'Mire los reportes de los datos del sistema',
+    imagen: '/assets/iconos/icono-reporte.png', ruta: '/reportes-admin'}
   ];
 
   constructor(private _auth: AuthService) { }

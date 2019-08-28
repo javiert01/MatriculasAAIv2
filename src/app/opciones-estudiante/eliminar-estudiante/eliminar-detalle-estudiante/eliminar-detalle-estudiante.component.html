@@ -1,0 +1,26 @@
+<div class="container">
+  <div class="row">
+    <h1><strong>Información del estudiante</strong></h1>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-1">
+          <h4><strong>Nombre:</strong></h4>
+          <h4><strong>Código:</strong></h4>
+          <h4><strong>Grado:</strong></h4>
+        </div>
+        <div class="col-md-3">
+          <h4>{{estudiante.NOMBRE_EST}}</h4>
+          <h4>{{estudiante.CODIGO_EST}}</h4>
+          <h4>{{estudiante.ID_GRADO.TIPO_GRADO}}</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+  <br><br>
+  <div class="row">
+    <div class="col-md-2"></div>
+    <button class="btn btn-danger btn-lg" (click)="eliminarEstudiante()">ELIMINAR ESTUDIANTE</button>
+  </div>
+</div>

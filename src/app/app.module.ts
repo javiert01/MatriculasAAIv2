@@ -9,7 +9,6 @@ import { HeaderComponent } from './header/header.component';
 import { AppRoutingModule } from './app-routing.module';
 import { StudentService } from './student/student.service';
 import { ClickOutsideModule } from 'ng-click-outside';
-import { TipoGradoPipe } from './pipes/tipogrado.pipe';
 import { OpcionPagoComponent } from './opcion-pago/opcion-pago.component';
 import { OpcionPagoListaComponent } from './opcion-pago/opcion-pago-lista/opcion-pago-lista.component';
 import { WINDOW_PROVIDERS } from './window.service';
@@ -57,6 +56,13 @@ import { EditarEstudianteDetalleComponent } from './opciones-estudiante/editar-e
 import { DialogEditarEstudianteComponent } from './dialog-editar-estudiante/dialog-editar-estudiante.component';
 import { CambioFamiliaEstudianteComponent } from './opciones-estudiante/cambio-familia-estudiante/cambio-familia-estudiante.component';
 import { DialogCambioFamiliaComponent } from './dialog-cambio-familia/dialog-cambio-familia.component';
+import { EliminarEstudianteComponent } from './opciones-estudiante/eliminar-estudiante/eliminar-estudiante.component';
+import { EliminarListaEstudianteComponent } from './opciones-estudiante/eliminar-estudiante/eliminar-lista-estudiante/eliminar-lista-estudiante.component';
+import { EliminarDetalleEstudianteComponent } from './opciones-estudiante/eliminar-estudiante/eliminar-detalle-estudiante/eliminar-detalle-estudiante.component';
+import { DialogEliminarEstudianteComponent } from './dialog-eliminar-estudiante/dialog-eliminar-estudiante.component';
+import { EstudiantesEstadoComponent } from './estudiantes-estado/estudiantes-estado.component';
+import { ListaEstudiantesEstadoComponent } from './estudiantes-estado/lista-estudiantes-estado/lista-estudiantes-estado.component';
+import { DetalleEstudiantesEstadoComponent } from './estudiantes-estado/detalle-estudiantes-estado/detalle-estudiantes-estado.component';
 
 @NgModule({
   declarations: [
@@ -98,7 +104,14 @@ import { DialogCambioFamiliaComponent } from './dialog-cambio-familia/dialog-cam
     EditarEstudianteDetalleComponent,
     DialogEditarEstudianteComponent,
     CambioFamiliaEstudianteComponent,
-    DialogCambioFamiliaComponent
+    DialogCambioFamiliaComponent,
+    EliminarEstudianteComponent,
+    EliminarListaEstudianteComponent,
+    EliminarDetalleEstudianteComponent,
+    DialogEliminarEstudianteComponent,
+    EstudiantesEstadoComponent,
+    ListaEstudiantesEstadoComponent,
+    DetalleEstudiantesEstadoComponent
   ],
   imports: [
     BrowserModule,
@@ -121,7 +134,7 @@ import { DialogCambioFamiliaComponent } from './dialog-cambio-familia/dialog-cam
   bootstrap: [AppComponent],
   entryComponents: [LoginDialogComponent, DialogOpcionPagoComponent, DialogSaldoPendienteComponent, DialogEditarGradoComponent,
   DialogEditarCategoriaComponent, DialogRegistroFamiliaComponent, DialogEditarFamiliaComponent, DialogRegistroEstudianteComponent,
-  DialogEditarEstudianteComponent, DialogCambioFamiliaComponent]
+  DialogEditarEstudianteComponent, DialogCambioFamiliaComponent, DialogEliminarEstudianteComponent]
 })
 
 export class AppModule { }
